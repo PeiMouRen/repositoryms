@@ -17,7 +17,6 @@ public class ShiroConfig {
 
     /**
      * 输入自定义的域
-     * @return
      */
     @Bean
     public MyRealm myRealm() {
@@ -43,9 +42,9 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         // 设置默认登录的 URL，身份认证失败会访问该 URL
-        shiroFilterFactoryBean.setLoginUrl("/login");
+        shiroFilterFactoryBean.setLoginUrl("/user/loginPage");
         // 设置成功之后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/success");
+        shiroFilterFactoryBean.setSuccessUrl("/user/success");
         // 设置未授权界面，权限认证失败会访问该 URL
         shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
 
@@ -53,23 +52,27 @@ public class ShiroConfig {
         Map<String,String> filterChainMap = new LinkedHashMap<>();
 
         // 配置可以匿名访问的地址，可以根据实际情况自己添加，放行一些静态资源等，anon 表示放行
-        filterChainMap.put("/css/**", "anon");
+        /*filterChainMap.put("/css/**", "anon");
         filterChainMap.put("/imgs/**", "anon");
-        filterChainMap.put("/js/**", "anon");
-        filterChainMap.put("/swagger-*/**", "anon");
-        filterChainMap.put("/swagger-ui.html/**", "anon");
+        filterChainMap.put("/js/**", "anon");*/
+        //filterChainMap.put("/swagger-*/**", "anon");
+        //filterChainMap.put("/swagger-ui.html/**", "anon");
+        filterChainMap.put("/templates/**", "anon");
+       // filterChainMap.put("/static/**", "anon");
+       // filterChainMap.put("/**/login.html", "anon");
         // 登录 URL 放行
-        filterChainMap.put("/login", "anon");
+        //filterChainMap.put("/user/loginPage", "anon");
+        //filterChainMap.put("/user/login", "anon");
 
         // 以“/user/admin” 开头的用户需要身份认证，authc 表示要进行身份认证
-        filterChainMap.put("/user/admin*", "authc");
+        //filterChainMap.put("/user/admin*", "authc");
         // “/user/student” 开头的用户需要角色认证，是“admin”才允许
-        filterChainMap.put("/user/student*/**", "roles[admin]");
+        //filterChainMap.put("/user/student*/**", "roles[admin]");
         // “/user/teacher” 开头的用户需要权限认证，是“user:create”才允许
-        filterChainMap.put("/user/teacher*/**", "perms[\"user:create\"]");
+        //filterChainMap.put("/user/teacher*/**", "perms[\"user:create\"]");
 
         // 配置 logout 过滤器
-        filterChainMap.put("/logout", "logout");
+        //filterChainMap.put("/user/logout", "logout");
 
         // 设置 shiroFilterFactoryBean 的 FilterChainDefinitionMap
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);

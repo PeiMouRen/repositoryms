@@ -1,6 +1,10 @@
 spring:
   application:
     name: user
+  mvc:
+    view:
+      prefix: classpath:/templates/
+      suffix: .html
 server:
   port: 8082
 
@@ -8,3 +12,4 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8081/eureka/
+

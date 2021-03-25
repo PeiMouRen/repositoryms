@@ -30,6 +30,12 @@ public class UserController {
         return "success";
     }
 
+    @RequestMapping(value = "/loginPage")
+    public String loginPage() {
+        System.out.println("hehe");
+        return "login";
+    }
+
     /**
      * 用户登录接口
      * @param user user
