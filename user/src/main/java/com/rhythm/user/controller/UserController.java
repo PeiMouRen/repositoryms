@@ -5,7 +5,10 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,17 +19,19 @@ public class UserController {
     @RequestMapping(value = "/admin")
     public String admin(HttpServletRequest request) {
         User user = (User)request.getSession().getAttribute("user");
-
+        System.out.println("1324");
         return "success";
     }
 
     @RequestMapping(value = "/student")
     public String student() {
+
+        ModelMap modelMap = new ModelMap();
         return "success";
     }
 
     @RequestMapping(value = "/teacher")
-    public String teacher() {
+    public String teacher(Model model) {
         return "success";
     }
 

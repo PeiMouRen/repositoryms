@@ -1,10 +1,7 @@
 spring:
   application:
     name: user
-  mvc:
-    view:
-      prefix: classpath:/templates/
-      suffix: .html
+
 server:
   port: 8082
 

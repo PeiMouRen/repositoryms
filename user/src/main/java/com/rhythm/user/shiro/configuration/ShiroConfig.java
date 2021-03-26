@@ -50,14 +50,15 @@ public class ShiroConfig {
 
         // LinkedHashMap 是有序的，进行顺序拦截器配置
         Map<String,String> filterChainMap = new LinkedHashMap<>();
-
+        filterChainMap.put("/user/admin", "authc");
+        filterChainMap.put("/**", "anon");
         // 配置可以匿名访问的地址，可以根据实际情况自己添加，放行一些静态资源等，anon 表示放行
         /*filterChainMap.put("/css/**", "anon");
         filterChainMap.put("/imgs/**", "anon");
         filterChainMap.put("/js/**", "anon");*/
         //filterChainMap.put("/swagger-*/**", "anon");
         //filterChainMap.put("/swagger-ui.html/**", "anon");
-        filterChainMap.put("/templates/**", "anon");
+        //filterChainMap.put("/templates/**", "anon");
        // filterChainMap.put("/static/**", "anon");
        // filterChainMap.put("/**/login.html", "anon");
         // 登录 URL 放行
