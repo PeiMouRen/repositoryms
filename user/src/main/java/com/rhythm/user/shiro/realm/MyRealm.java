@@ -27,8 +27,10 @@ public class MyRealm extends AuthorizingRealm {
         String username = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         // 给该用户设置角色
+        System.out.println("获取角色");
         authorizationInfo.setRoles(userService.getRoles(username));
         // 给该用户设置权限
+        System.out.println("获取权限");
         authorizationInfo.setStringPermissions(userService.getPermissions(username));
         return authorizationInfo;
     }
@@ -43,6 +45,7 @@ public class MyRealm extends AuthorizingRealm {
             // 把当前用户存到 Session 中
             SecurityUtils.getSubject().getSession().setAttribute("user", user);
             // 传入用户名和密码进行身份认证，并返回认证信息
+            System.out.println("认证用户");
             AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), "myRealm");
             return authcInfo;
         } else {

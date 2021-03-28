@@ -1,8 +1,11 @@
 package com.rhythm.user.controller;
 
 import com.rhythm.user.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
@@ -35,8 +39,36 @@ public class UserController {
         return "success";
     }
 
+    @RequestMapping(value = "/nopermission")
+    public String nopermission() {
+        return "nopermission";
+    }
+
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/roleTest")
+    public String roleTest(HttpServletRequest request) {
+        User user = (User)request.getSession().getAttribute("user");
+        System.out.println(user.toString());
+        return "success";
+    }
+
+    @RequiresPermissions("user:create")
+    @RequestMapping(value = "/permTest")
+    public String permTest(HttpServletRequest request) {
+        User user = (User)request.getSession().getAttribute("user");
+        System.out.println(user.toString());
+        return "success";
+    }
+
+    /*@RequestMapping(value = "/logout")
+    public String logout(Model model) {
+        log.info("访问登出操作");
+        return "success";
+    }*/
+
     @RequestMapping(value = "/loginPage")
     public String loginPage() {
+        log.info("访问登录页面");
         System.out.println("hehe");
         return "login";
     }

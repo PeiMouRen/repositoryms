@@ -3,11 +3,16 @@ package com.rhythm.user.shiro.configuration;
 import com.rhythm.user.shiro.realm.MyRealm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -46,37 +51,39 @@ public class ShiroConfig {
         // 设置成功之后要跳转的链接
         shiroFilterFactoryBean.setSuccessUrl("/user/success");
         // 设置未授权界面，权限认证失败会访问该 URL
-        shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/user/nopermission");
 
         // LinkedHashMap 是有序的，进行顺序拦截器配置
         Map<String,String> filterChainMap = new LinkedHashMap<>();
         filterChainMap.put("/user/admin", "authc");
-        filterChainMap.put("/**", "anon");
         // 配置可以匿名访问的地址，可以根据实际情况自己添加，放行一些静态资源等，anon 表示放行
-        /*filterChainMap.put("/css/**", "anon");
+        filterChainMap.put("/css/**", "anon");
         filterChainMap.put("/imgs/**", "anon");
-        filterChainMap.put("/js/**", "anon");*/
-        //filterChainMap.put("/swagger-*/**", "anon");
-        //filterChainMap.put("/swagger-ui.html/**", "anon");
-        //filterChainMap.put("/templates/**", "anon");
-       // filterChainMap.put("/static/**", "anon");
-       // filterChainMap.put("/**/login.html", "anon");
+        filterChainMap.put("/js/**", "anon");
+        filterChainMap.put("/templates/**", "anon");
+        filterChainMap.put("/static/**", "anon");
         // 登录 URL 放行
-        //filterChainMap.put("/user/loginPage", "anon");
-        //filterChainMap.put("/user/login", "anon");
+        filterChainMap.put("/user/loginPage", "anon");
+        filterChainMap.put("/user/login", "anon");
 
         // 以“/user/admin” 开头的用户需要身份认证，authc 表示要进行身份认证
-        //filterChainMap.put("/user/admin*", "authc");
+        filterChainMap.put("/user/admin*", "authc");
         // “/user/student” 开头的用户需要角色认证，是“admin”才允许
-        //filterChainMap.put("/user/student*/**", "roles[admin]");
+        filterChainMap.put("/user/student*/**", "authc, roles[admin]");
         // “/user/teacher” 开头的用户需要权限认证，是“user:create”才允许
-        //filterChainMap.put("/user/teacher*/**", "perms[\"user:create\"]");
+        filterChainMap.put("/user/teacher*/**", "authc, perms[user:create]");
 
         // 配置 logout 过滤器
-        //filterChainMap.put("/user/logout", "logout");
+        LogoutFilter logoutFilter = new LogoutFilter();
+        logoutFilter.setRedirectUrl("/user/loginPage");
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("logout", logoutFilter);
+        shiroFilterFactoryBean.setFilters(filters);
+        filterChainMap.put("/user/logout", "logout");
 
         // 设置 shiroFilterFactoryBean 的 FilterChainDefinitionMap
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);
         return shiroFilterFactoryBean;
     }
+
 }
