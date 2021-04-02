@@ -44,7 +44,7 @@ public class CodeGenerator {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/user/src/main/java/com/rhythm");
+        gc.setOutputDir(projectPath + "/user/src/main/java");
         System.out.println(gc.getOutputDir());
         gc.setAuthor("xzpei");
         gc.setOpen(false);
@@ -63,7 +63,8 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         //pc.setModuleName(scanner("模块名"));
-        pc.setParent("user");
+        pc.setModuleName("user");
+        pc.setParent("com.rhythm");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
