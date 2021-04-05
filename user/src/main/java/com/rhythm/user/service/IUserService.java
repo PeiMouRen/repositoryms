@@ -1,6 +1,6 @@
 package com.rhythm.user.service;
 
-import com.rhythm.user.entity.Test;
+import com.rhythm.user.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author xzpei
- * @since 2021-04-02
+ * @since 2021-04-03
  */
-public interface ITestService extends IService<Test> {
+public interface IUserService extends IService<User> {
 
 }
