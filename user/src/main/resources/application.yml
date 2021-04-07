@@ -6,6 +6,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: mysql
+  thymeleaf:
+    cache: false
 
 server:
   port: 8082
@@ -16,4 +18,3 @@ eureka:
       defaultZone: http://localhost:8081/eureka/
 logging:
   config: classpath:logback.xml
-

@@ -55,23 +55,26 @@ public class ShiroConfig {
 
         // LinkedHashMap 是有序的，进行顺序拦截器配置
         Map<String,String> filterChainMap = new LinkedHashMap<>();
-        filterChainMap.put("/user/admin", "authc");
         // 配置可以匿名访问的地址，可以根据实际情况自己添加，放行一些静态资源等，anon 表示放行
-        filterChainMap.put("/css/**", "anon");
-        filterChainMap.put("/imgs/**", "anon");
-        filterChainMap.put("/js/**", "anon");
-        filterChainMap.put("/templates/**", "anon");
+        // filterChainMap.put("/templates/**", "anon");
         filterChainMap.put("/static/**", "anon");
+        filterChainMap.put("/css/**", "anon");
+        filterChainMap.put("/js/**", "anon");
+        filterChainMap.put("/fonts/**", "anon");
+        filterChainMap.put("/images/**", "anon");
+        filterChainMap.put("/layui/**", "anon");
+        filterChainMap.put("/less/**", "anon");
+        filterChainMap.put("/lib/**", "anon");
         // 登录 URL 放行
         filterChainMap.put("/user/loginPage", "anon");
         filterChainMap.put("/user/login", "anon");
 
         // 以“/user/admin” 开头的用户需要身份认证，authc 表示要进行身份认证
-        filterChainMap.put("/user/admin*", "authc");
+        //filterChainMap.put("/user/admin*", "authc");
         // “/user/student” 开头的用户需要角色认证，是“admin”才允许
-        filterChainMap.put("/user/student*/**", "authc, roles[admin]");
+        //filterChainMap.put("/user/student*/**", "authc, roles[admin]");
         // “/user/teacher” 开头的用户需要权限认证，是“user:create”才允许
-        filterChainMap.put("/user/teacher*/**", "authc, perms[user:create]");
+        //filterChainMap.put("/user/teacher*/**", "authc, perms[user:create]");
 
         // 配置 logout 过滤器
         LogoutFilter logoutFilter = new LogoutFilter();
@@ -81,6 +84,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filters);
         filterChainMap.put("/user/logout", "logout");
 
+        filterChainMap.put("/**", "authc");
         // 设置 shiroFilterFactoryBean 的 FilterChainDefinitionMap
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);
         return shiroFilterFactoryBean;

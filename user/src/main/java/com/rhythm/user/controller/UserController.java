@@ -80,7 +80,6 @@ public class UserController {
      */
     @RequestMapping("/login")
     public String login(User user, HttpServletRequest request) {
-
         user.setPassword(CommonUtil.getMD5String(user.getPassword())); // 密码加密
 
         // 根据用户名和密码创建 Token
@@ -92,7 +91,7 @@ public class UserController {
             subject.login(token);
             // 验证一下shiro存入的session是否在httpsession中可以拿到
             log.info("验证session域：" + ((User)request.getSession().getAttribute("user")).toString());
-            return "success";
+            return "user-manage";
         }catch(Exception e){
             e.printStackTrace();
             request.getSession().setAttribute("user", user);
