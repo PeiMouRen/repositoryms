@@ -30,7 +30,7 @@
 						</div>
 						<div class="layui-form-item m-login-btn">
 							<div class="layui-inline">
-								<button style="margin-left: 80px;" class="layui-btn layui-btn-normal" lay-submit lay-filter="login" onclick="login()">登录</button>
+								<button style="margin-left: 80px;" class="layui-btn layui-btn-normal" lay-submit lay-filter="login" >登录</button>
 							</div>
 							<!--<div class="layui-inline">
 								<button type="reset" class="layui-btn layui-btn-primary">取消</button>
@@ -44,7 +44,7 @@
 		<script src="/layui/layui.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			layui.use(['form', 'layedit', 'laydate'], function() {
-				var form = layui.form(),
+				var form = layui.form,
 					layer = layui.layer;
 
 				//自定义验证规则

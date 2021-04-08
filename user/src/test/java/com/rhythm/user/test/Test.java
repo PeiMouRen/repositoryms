@@ -25,13 +25,13 @@ public class Test {
 
     @org.junit.Test
     public void userTest() {
-       /* User user = new User();
+        User user = new User();
         user.setUsername("admin");
         user.setPassword(CommonUtil.getMD5String("admin"));
         user.setPhone("12345612341");
         user.setLevel(UserLevel.ADMIN.getLevel());
-        userMapper.insert(user);*/
-        Page<User> page = new Page<>(1, 2);
+        userMapper.insert(user);
+       /* Page<User> page = new Page<>(1, 2);
         page = userService.page(page, new QueryWrapper<User>());
         System.out.println(page.getTotal());
         System.out.println(page.getCurrent());
@@ -39,7 +39,7 @@ public class Test {
         for (User user: page.getRecords()) {
             System.out.println(user);
         }
-        System.out.println(page.toString());
+        System.out.println(page.toString());*/
 
     }
 

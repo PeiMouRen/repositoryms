@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author xzpei
- * @since 2021-04-03
+ * @since 2021-04-08
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -32,6 +32,10 @@ public class User implements Serializable {
     private String phone;
 
     private Integer level;
+
+    private String email;
+
+    private Integer sex;
 
 
 }

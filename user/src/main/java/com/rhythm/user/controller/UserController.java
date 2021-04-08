@@ -41,7 +41,7 @@ public class UserController {
     public Result updateUser(User user) {
         userService.updateById(user);
         Result result = Result.ok();
-        result.setData("user", user);
+        result.setData(user);
         return result;
     }
 
@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping(value = "/user/{id}")
     public Result getUser(@PathVariable Integer id) {
         Result result = Result.ok();
-        result.setData("user", userService.getById(id));
+        result.setData(userService.getById(id));
         return result;
     }
 
@@ -64,7 +64,10 @@ public class UserController {
     @GetMapping(value = "/users")
     public Result users(Page page) {
         page = userService.page(page);
-        return Result.ok(page.getTotal(), page.getCurrent(), page.getSize(), page.getRecords());
+        Result result = Result.ok();
+        result.setTotal(page.getTotal());
+        result.setData(page.getRecords());
+        return result;
     }
 
     @RequestMapping(value = "/loginPage")

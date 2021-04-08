@@ -2,7 +2,10 @@ package com.rhythm.user.result;
 
 import com.rhythm.user.Enum.ResultCode;
 import lombok.Data;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -14,7 +17,9 @@ public class Result {
 
     private String message;
 
-    private Map<String,Object> data = new HashMap<String ,Object>();
+    private Object data;
+
+    private long total;
 
     public Result(){}
 
@@ -26,17 +31,6 @@ public class Result {
         return r;
     }
 
-    public static Result ok(long total, long current, long size, Object records) {
-        Result r = new Result();
-        r.setCode(ResultCode.SUCCESS.getCode());
-        r.setSuccess(ResultCode.SUCCESS.getStatus());
-        r.setMessage(ResultCode.SUCCESS.getMessage());
-        r.setData("total", total);
-        r.setData("current", current);
-        r.setData("size", size);
-        r.setData("records", records);
-        return r;
-    }
 
     public static Result error(){
         Result r = new Result();
@@ -61,15 +55,7 @@ public class Result {
         r.setMessage(codeEnum.getMessage());
         return r;
     }
-    public Result setData(Map<String,Object> map){
-        this.setData(map);
-        return this;
-    }
 
-    public Result setData(String key,Object value){
-        this.data.put(key,value);
-        return this;
-    }
 
     public Result message(String message){
         this.setMessage(message);
