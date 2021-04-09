@@ -8,6 +8,11 @@ spring:
     password: mysql
   thymeleaf:
     cache: false
+  mvc:
+    hiddenmethod:
+      filter:
+        ## 设置form表单可按put、delete方式提交
+        enabled: true
 
 server:
   port: 8082
@@ -18,3 +23,4 @@ eureka:
       defaultZone: http://localhost:8081/eureka/
 logging:
   config: classpath:logback.xml
+

@@ -32,6 +32,7 @@ public class UserController {
     @ResponseBody
     @PostMapping(value = "/user")
     public Result addUser(User user) {
+        user.setPassword(CommonUtil.getMD5String("123456"));
         userService.save(user);
         return Result.ok();
     }
