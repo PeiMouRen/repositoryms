@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rhythm.rpst.mapper.RpstMapper">
+
+    <select id="selectRpstsByUserId" resultType="com.rhythm.rpst.entity.Rpst">
+        select * from rpst where id in(
+            select rpstId from user_rpst where userId = #{userId}
+        )
+    </select>
+
+</mapper>

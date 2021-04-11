@@ -1,11 +1,11 @@
 layui.config({
-	base: '../../static/admin/js/module/'
+	base: '/js/module/'
 }).extend({
 	dialog: 'dialog',
 });
 
 layui.use(['form', 'jquery', 'laydate', 'layer', 'laypage', 'dialog',   'element'], function() {
-	var form = layui.form(),
+	var form = layui.form,
 		layer = layui.layer,
 		$ = layui.jquery,
 		dialog = layui.dialog;

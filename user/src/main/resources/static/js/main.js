@@ -1,7 +1,7 @@
 layui.use(['layer', 'form', 'element', 'jquery', 'dialog'], function() {
 	var layer = layui.layer;
-	var element = layui.element();
-	var form = layui.form();
+	var element = layui.element;
+	var form = layui.form;
 	var $ = layui.jquery;
 	var dialog = layui.dialog;
 	var hideBtn = $('#hideBtn');
@@ -9,10 +9,13 @@ layui.use(['layer', 'form', 'element', 'jquery', 'dialog'], function() {
 	var mainMask = $('.main-mask');
 	//监听导航点击
 	element.on('nav(leftNav)', function(elem) {
+		console.log(elem);
 		var navA = $(elem).find('a');
+		console.log(navA);
 		var id = navA.attr('data-id');
 		var url = navA.attr('data-url');
 		var text = navA.attr('data-text');
+		console.log(url);
 		if(!url){
 			return;
 		}

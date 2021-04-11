@@ -8,18 +8,15 @@ import com.rhythm.user.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Controller
@@ -29,9 +26,27 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Value(value = "${server.port}")
+    Integer port;
+
+    @ResponseBody
+    @GetMapping(value = "/set")
+    public String setSession(HttpSession session) {
+        session.setAttribute("test", "test-test");
+        return String.valueOf(port);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/get")
+    public String getSession(HttpSession session) {
+        session.setAttribute("test", "test-test");
+        return session.getAttribute("test") + ", " + port;
+    }
+
     @ResponseBody
     @PostMapping(value = "/user")
-    public Result addUser(User user) {
+    public Result addUser(@RequestBody User user) {
+        log.info("新增用户，" + user.toString());
         user.setPassword(CommonUtil.getMD5String("123456"));
         userService.save(user);
         return Result.ok();
@@ -39,7 +54,8 @@ public class UserController {
 
     @ResponseBody
     @PutMapping(value = "/user")
-    public Result updateUser(User user) {
+    public Result updateUser(@RequestBody User user) {
+        log.info("更新用户信息，" + user.toString());
         userService.updateById(user);
         Result result = Result.ok();
         result.setData(user);
@@ -83,7 +99,7 @@ public class UserController {
      * @return string
      */
     @RequestMapping("/login")
-    public String login(User user, HttpServletRequest request) {
+    public String login(User user, Model model, HttpServletRequest request) {
         user.setPassword(CommonUtil.getMD5String(user.getPassword())); // 密码加密
 
         // 根据用户名和密码创建 Token
@@ -95,7 +111,8 @@ public class UserController {
             subject.login(token);
             // 验证一下shiro存入的session是否在httpsession中可以拿到
             log.info("验证session域：" + ((User)request.getSession().getAttribute("user")).toString());
-            return "user-manage";
+            model.addAttribute("username", user.getUsername());
+            return "index";
         }catch(Exception e){
             e.printStackTrace();
             request.getSession().setAttribute("user", user);

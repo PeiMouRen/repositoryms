@@ -1,4 +1,4 @@
-package com.rhythm.user;
+package com.rhythm.rpst;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -9,11 +9,11 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableEurekaClient
 @SpringBootApplication
 @EnableRedisHttpSession
-@MapperScan("com.rhythm.user.mapper")
-public class UserApplication {
+@MapperScan("com.rhythm.rpst.mapper")
+public class RpstApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserApplication.class, args);
+        SpringApplication.run(RpstApplication.class, args);
     }
 
 }
