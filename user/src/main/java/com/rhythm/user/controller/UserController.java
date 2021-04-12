@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rhythm.user.entity.User;
 import com.rhythm.user.result.Result;
 import com.rhythm.user.service.IUserService;
+import com.rhythm.user.service.inter.IRpstService;
 import com.rhythm.user.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -25,9 +26,19 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IRpstService rpstService;
 
     @Value(value = "${server.port}")
     Integer port;
+
+    @ResponseBody
+    @GetMapping(value = "/rpsts")
+    public Result rpsts(Page page, HttpSession session) {
+        log.info("验证session: " + session.getAttribute("userId"));
+        log.info("验证page：" + page.getCurrent() + " - " + page.getSize());
+        return rpstService.getRpsts(page.getCurrent(), page.getSize());
+    }
 
     @ResponseBody
     @GetMapping(value = "/set")
@@ -110,12 +121,12 @@ public class UserController {
             // 开始认证，这一步会跳到我们自定义的 Realm 中
             subject.login(token);
             // 验证一下shiro存入的session是否在httpsession中可以拿到
-            log.info("验证session域：" + ((User)request.getSession().getAttribute("user")).toString());
+            //log.info("验证session域：" + ((User)request.getSession().getAttribute("user")).toString());
+            log.info("验证session域：" + ((int)request.getSession().getAttribute("userId")));
             model.addAttribute("username", user.getUsername());
             return "index";
         }catch(Exception e){
             e.printStackTrace();
-            request.getSession().setAttribute("user", user);
             request.setAttribute("error", "用户名或密码错误！");
             return "login";
         }
