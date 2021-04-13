@@ -12,13 +12,10 @@ public class PageController {
         return "user-manage";
     }
 
-    @RequestMapping(value = "/test1")
-    public String test1() {
-        return "welcome";
+    @RequestMapping(value = "/rpst-manage")
+    public String rpstManage() {
+        return "rpst-manage";
     }
 
-    @RequestMapping(value = "/test2")
-    public String test2() {
-        return "success";
-    }
+
 }

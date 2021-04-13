@@ -1,6 +1,8 @@
 package com.rhythm.user.shiro.realm;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhythm.user.entity.User;
 import com.rhythm.user.service.IUserService;
 import org.apache.shiro.SecurityUtils;
@@ -24,6 +26,8 @@ public class MyRealm extends AuthorizingRealm {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -45,7 +49,11 @@ public class MyRealm extends AuthorizingRealm {
         User user = userService.getOne(new QueryWrapper<User>().eq("username", username));
         if(user != null) {
             // 把当前用户存到 Session 中
-            //SecurityUtils.getSubject().getSession().setAttribute("user", user);
+            try {
+                SecurityUtils.getSubject().getSession().setAttribute("user", objectMapper.writeValueAsString(user));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
             SecurityUtils.getSubject().getSession().setAttribute("userId", user.getId());
             // 传入用户名和密码进行身份认证，并返回认证信息
             AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), "myRealm");

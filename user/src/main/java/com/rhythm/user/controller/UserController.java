@@ -26,33 +26,6 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    private IRpstService rpstService;
-
-    @Value(value = "${server.port}")
-    Integer port;
-
-    @ResponseBody
-    @GetMapping(value = "/rpsts")
-    public Result rpsts(Page page, HttpSession session) {
-        log.info("验证session: " + session.getAttribute("userId"));
-        log.info("验证page：" + page.getCurrent() + " - " + page.getSize());
-        return rpstService.getRpsts(page.getCurrent(), page.getSize());
-    }
-
-    @ResponseBody
-    @GetMapping(value = "/set")
-    public String setSession(HttpSession session) {
-        session.setAttribute("test", "test-test");
-        return String.valueOf(port);
-    }
-
-    @ResponseBody
-    @GetMapping(value = "/get")
-    public String getSession(HttpSession session) {
-        session.setAttribute("test", "test-test");
-        return session.getAttribute("test") + ", " + port;
-    }
 
     @ResponseBody
     @PostMapping(value = "/user")

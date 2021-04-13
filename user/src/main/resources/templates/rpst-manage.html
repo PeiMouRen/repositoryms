@@ -13,44 +13,33 @@
 
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
-<div style="display: none" id="user_form">
-	<form class="layui-form" onsubmit="return false;" method="post" lay-filter="user_form">
-		<input type="text" name="id" id="user_id" value="" style="display: none" />
+<div style="display: none" id="rpst_form">
+	<form class="layui-form" onsubmit="return false;" lay-filter="rpst_form">
+		<input type="text" name="id" id="rpst_id" value="" style="display: none" />
 		<div class="layui-form-item">
-			<label class="layui-form-label">用户名</label>
+			<label class="layui-form-label">仓库名称</label>
 			<div class="layui-input-block">
-				<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+				<input type="text" name="name" required  lay-verify="required" placeholder="请输入仓库名称" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">单选框</label>
+			<label class="layui-form-label">仓库地址</label>
 			<div class="layui-input-block">
-				<input type="radio" name="sex" value="1" title="男">
-				<input type="radio" name="sex" value="0" title="女" checked>
+				<input type="text" name="place" required  lay-verify="required" placeholder="请输入仓库地址" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">手机号</label>
+			<label class="layui-form-label">仓库大小</label>
 			<div class="layui-input-block">
-				<input type="text" name="phone" required  lay-verify="required|phone|number" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+				<input type="text" name="size" required  lay-verify="required|number" placeholder="请输入仓库大小" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">邮箱</label>
+			<label class="layui-form-label">所属用户</label>
 			<div class="layui-input-block">
-				<input type="text" name="email" required  lay-verify="required|email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+				<div id="user_select" class="xm-select-demo"></div>
 			</div>
 		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">用户等级</label>
-			<div class="layui-input-block">
-				<select name="level" lay-verify="required">
-					<option value="2" selected>高级操作员</option>
-					<option value="3">普通操作员</option>
-				</select>
-			</div>
-		</div>
-
 		<div class="layui-form-item">
 			<div class="layui-input-block">
 				<button class="layui-btn" lay-submit lay-filter="form_submit">确定</button>
@@ -62,13 +51,15 @@
 
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
-		<button class="layui-btn layui-btn-sm" lay-event="addUser">新增仓库</button>
+		<button class="layui-btn layui-btn-sm" lay-event="addRpst">新增仓库</button>
 	</div>
 </script>
 
 <script type="text/html" id="barDemo">
-	{{# if(d.level != 1) { }}
 	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	<a class="layui-btn layui-btn-xs" lay-event="inStorage">入库</a>
+	<a class="layui-btn layui-btn-xs" lay-event="outStorage">出库</a>
+	{{# if(d.level != 1) { }}
 	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 	{{# } }}
 </script>
@@ -95,6 +86,7 @@
 
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
 <script src="/layui/layui.js" charset="utf-8"></script>
+<script src="/js/xm-select.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
@@ -103,9 +95,9 @@
 		var form = layui.form;
 		var layer = layui.layer;
 
-		var userTable = table.render({
+		var rpstTable = table.render({
 			elem: '#test'
-			,url:'/user/users'
+			,url:'/rpst/rpsts'
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
@@ -138,14 +130,14 @@
 		//头工具栏事件
 		table.on('toolbar(test)', function(obj){
 			switch(obj.event){
-				case 'addUser':
-					$('#user_form form')[0].reset();
+				case 'addRpst':
+					$('#rpst_form form')[0].reset();
 					$('#submit_method').val("post");
 					layer.open({
 						type: 1,
-						title: '新增用户',
+						title: '新增仓库',
 						area: ['400px', '400px'],
-						content: $('#user_form')
+						content: $('#rpst_form')
 					});
 					break;
 
@@ -155,10 +147,10 @@
 		//监听工具条
 		table.on('tool(test)', function(obj){
 			if(obj.event === 'del'){
-				layer.confirm('确定删除该用户', function(index){
+				layer.confirm('确定删除该仓库？', function(index){
 					$.ajax({
 						type: "delete",
-						url: "/user/user/" + obj.data.id,
+						url: "/rpst/rpst/" + obj.data.id,
 						dataType: "json",
 						success: function(result) {
 							if (result.code == 200) {
@@ -166,17 +158,16 @@
 							}
 						}
 					})
-					userTable.reload({}, false);
+					rpstTable.reload({}, false);
 					layer.close(index);
 				});
 			} else if(obj.event === 'edit'){
-				form.val('user_form', obj.data);
-				$('#submit_method').val("put");
+				form.val('rpst_form', obj.data);
 				layer.open({
 					type: 1,
-					title: '编辑用户信息',
+					title: '编辑仓库信息',
 					area: ['400px', '400px'],
-					content: $('#user_form')
+					content: $('#rpst_form')
 				});
 			}
 		});
