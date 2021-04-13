@@ -24,7 +24,11 @@ public class RpstServiceImpl extends ServiceImpl<RpstMapper, Rpst> implements IR
     private RpstMapper rpstMapper;
 
     @Override
-    public Page<Rpst> getRpstsByUserId(Page page, Integer userId) {
-        return rpstMapper.selectRpstsByUserId(page, userId);
+    public Page<Rpst> getRpstsByUserId(Page<Rpst> page, Integer userId) {
+        page = rpstMapper.selectRpstsByUserId(page, userId);
+        for (Rpst rpst: page.getRecords()) {
+            rpst.setUsers(rpstMapper.selectUsersByRpstId(rpst.getId()));
+        }
+        return page;
     }
 }

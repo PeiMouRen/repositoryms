@@ -90,6 +90,33 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
+	var userDatas = [];
+	$.ajax({
+		type: "get",
+		url: "/user/users",
+		dataType: "json",
+		async: false,
+		success: function(result) {
+			if (result.code == 200) {
+				for (var i = 0; i < result.data.length; i++) {
+					var user = result.data[i];
+					var userData = {name : user.username, value : user.id, selected : false};
+					userDatas.push(userData)
+				}
+			}
+		}
+	})
+	var userSelect = xmSelect.render({
+		el: '#user_select',
+		name: 'userIds',
+		data: userDatas,
+		filterable: true,
+		size: 'mini',
+		paging: true,
+		direction: 'down'
+	});
+
+
 	layui.use(['table', 'form', 'layer'], function(){
 		var table = layui.table;
 		var form = layui.form;
@@ -163,6 +190,13 @@
 				});
 			} else if(obj.event === 'edit'){
 				form.val('rpst_form', obj.data);
+				var users = obj.data.users;
+				var selectUserIds = [];
+				for (var i = 0; i < users.length; i++) {
+					selectUserIds.push(users[i].id);
+				}
+				userSelect.setValue(selectUserIds);
+
 				layer.open({
 					type: 1,
 					title: '编辑仓库信息',
@@ -175,9 +209,11 @@
 		// 监听form表单提交
 		form.on('submit(form_submit)', function(data) {
 			var method = data.field.id == ''? 'post' : 'put';
+			console.log(JSON.stringify(data.field));
+			return;
 			$.ajax({
 				type: method,
-				url: "/user/user",
+				url: "/rpst/rpst",
 				contentType:"application/json;charset=utf-8",
 				data: JSON.stringify(data.field),
 				dataType: "json",
@@ -190,8 +226,6 @@
 				}
 			})
 		});
-
-
 
 	});
 </script>

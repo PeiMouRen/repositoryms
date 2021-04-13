@@ -14,6 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRpstService extends IService<Rpst> {
 
-    Page<Rpst> getRpstsByUserId(Page page, Integer userId);
+    Page<Rpst> getRpstsByUserId(Page<Rpst> page, Integer userId);
 
 }
