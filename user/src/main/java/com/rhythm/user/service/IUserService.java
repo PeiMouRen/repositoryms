@@ -1,5 +1,6 @@
 package com.rhythm.user.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rhythm.user.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserService extends IService<User> {
 
+    Page<User> getUsers(Page<User> page);
+
+    void addUser(User user);
+
+    void delUser(Integer userId);
+
+    void updUser(User user);
 }

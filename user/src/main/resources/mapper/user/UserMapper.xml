@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rhythm.user.mapper.UserMapper">
 
+    <insert id="addRelation">
+        insert into user_rpst(userId, rpstId) values
+        <foreach collection="rpstIds" separator="," item="item">
+            (#{userId}, #{item})
+        </foreach>
+    </insert>
+
 </mapper>

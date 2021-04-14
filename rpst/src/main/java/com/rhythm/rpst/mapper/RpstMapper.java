@@ -27,7 +27,8 @@ public interface RpstMapper extends BaseMapper<Rpst> {
 
     Page<Rpst> selectRpstsByUserId(Page page, Integer userId);
 
-    List<User> selectUsersByRpstId(Integer rpstId);
+    @Select("select userId from user_rpst where rpstId = #{rpstId}")
+    List<Integer> selectUserIdsByRpstId(Integer rpstId);
 
     @Delete("delete from user_rpst where rpstId = #{rpstId}")
     void delRelationByRpstId(Integer rpstId);

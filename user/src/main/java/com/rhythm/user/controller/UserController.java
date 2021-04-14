@@ -34,7 +34,7 @@ public class UserController {
     public Result addUser(@RequestBody User user) {
         log.info("新增用户，" + user.toString());
         user.setPassword(CommonUtil.getMD5String("123456"));
-        userService.save(user);
+        userService.addUser(user);
         return Result.ok();
     }
 
@@ -42,7 +42,7 @@ public class UserController {
     @PutMapping(value = "/user")
     public Result updateUser(@RequestBody User user) {
         log.info("更新用户信息，" + user.toString());
-        userService.updateById(user);
+        userService.updUser(user);
         Result result = Result.ok();
         result.setData(user);
         return result;
@@ -51,7 +51,7 @@ public class UserController {
     @ResponseBody
     @DeleteMapping(value = "/user/{id}")
     public Result DeleteUser(@PathVariable Integer id) {
-        userService.removeById(id);
+        userService.delUser(id);
         return Result.ok();
     }
 
@@ -66,7 +66,7 @@ public class UserController {
     @ResponseBody
     @GetMapping(value = "/users")
     public Result users(Page page) {
-        page = userService.page(page, new QueryWrapper<User>().ne("level", UserLevel.ADMIN.getLevel()));
+        page = userService.getUsers(page);
         Result result = Result.ok();
         result.setTotal(page.getTotal());
         result.setData(page.getRecords());

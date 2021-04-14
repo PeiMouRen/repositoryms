@@ -31,7 +31,7 @@ public class RpstServiceImpl extends ServiceImpl<RpstMapper, Rpst> implements IR
     public Page<Rpst> getRpsts(Page<Rpst> page) {
         page = rpstMapper.selectPage(page, new QueryWrapper<>());
         for (Rpst rpst: page.getRecords()) {
-            rpst.setUsers(rpstMapper.selectUsersByRpstId(rpst.getId()));
+            rpst.setUserIds(rpstMapper.selectUserIdsByRpstId(rpst.getId()));
         }
         return page;
     }
@@ -40,7 +40,7 @@ public class RpstServiceImpl extends ServiceImpl<RpstMapper, Rpst> implements IR
     public Page<Rpst> getRpstsByUserId(Page<Rpst> page, Integer userId) {
         page = rpstMapper.selectRpstsByUserId(page, userId);
         for (Rpst rpst: page.getRecords()) {
-            rpst.setUsers(rpstMapper.selectUsersByRpstId(rpst.getId()));
+            rpst.setUserIds(rpstMapper.selectUserIdsByRpstId(rpst.getId()));
         }
         return page;
     }
@@ -60,12 +60,9 @@ public class RpstServiceImpl extends ServiceImpl<RpstMapper, Rpst> implements IR
     @Override
     public void updRpst(Rpst rpst) {
         rpstMapper.updateById(rpst);
-        updateUserRpstRelation(rpst.getId(), rpst.getUserIds());
+
+        rpstMapper.delRelationByRpstId(rpst.getId());
+        rpstMapper.addRelation(rpst.getId(), rpst.getUserIds());
     }
 
-    @Override
-    public void updateUserRpstRelation(Integer rpstId, List<Integer> userIds) {
-        rpstMapper.delRelationByRpstId(rpstId);
-        rpstMapper.addRelation(rpstId, userIds);
-    }
 }

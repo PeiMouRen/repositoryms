@@ -8,9 +8,6 @@
         )
     </select>
 
-    <select id="selectUsersByRpstId" resultType="com.rhythm.common.entity.User">
-        select * from user where id in (select userId from user_rpst where rpstId = #{rpstId})
-    </select>
 
     <insert id="addRelation">
         insert into user_rpst(userId, rpstId) values

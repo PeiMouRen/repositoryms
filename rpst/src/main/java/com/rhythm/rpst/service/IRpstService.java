@@ -26,6 +26,4 @@ public interface IRpstService extends IService<Rpst> {
 
     void updRpst(Rpst rpst);
 
-    void updateUserRpstRelation(Integer rpstId, List<Integer> userIds);
-
 }

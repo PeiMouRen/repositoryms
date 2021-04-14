@@ -36,9 +36,6 @@ public class Rpst implements Serializable {
     private Integer size;
 
     @TableField(exist = false)
-    private List<User> users;
-
-    @TableField(exist = false)
     private List<Integer> userIds;
 
 }

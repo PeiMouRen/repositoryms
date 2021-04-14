@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -38,5 +39,6 @@ public class User implements Serializable {
 
     private Integer sex;
 
+    private List<Integer> rpstIds;
 
 }

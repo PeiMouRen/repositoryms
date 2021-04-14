@@ -42,12 +42,9 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">用户等级</label>
+			<label class="layui-form-label">管理的仓库</label>
 			<div class="layui-input-block">
-				<select name="level" lay-verify="required">
-					<option value="2" selected>高级操作员</option>
-					<option value="3">普通操作员</option>
-				</select>
+				<div id="rpst_select" class="xm-select-demo"></div>
 			</div>
 		</div>
 
@@ -83,21 +80,50 @@
 	{{# } }}
 </script>
 
-<script type="text/html" id="levelTpl">
-	{{#  if(d.level == 1){ }}
-	管理员
-	{{#  } else if(d.level == 2) { }}
-	高级操作员
-	{{#  } else if(d.level == 3) { }}
-	普通操作员
-	{{# } }}
+<script type="text/html" id="rpstTpl">
+	{{#
+		var nameArr = [];
+		for (var i = 0; i < d.rpstIds.length; i++) {
+			nameArr.push(rpstDatas.filter(item => item.value == d.rpstIds[i])[0].name);
+		}
+
+	}}
+	{{ nameArr.toString()}}
 </script>
 
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
 <script src="/layui/layui.js" charset="utf-8"></script>
+<script src="/js/xm-select.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
+	var rpstDatas = [];
+	$.ajax({
+		type: "get",
+		url: "/rpst/rpsts",
+		dataType: "json",
+		async: false,
+		success: function(result) {
+			if (result.code == 200) {
+				for (var i = 0; i < result.data.length; i++) {
+					var rpst = result.data[i];
+					var rpstData = {name : rpst.name, value : rpst.id, selected : false};
+					rpstDatas.push(rpstData);
+				}
+			}
+		}
+	})
+	var rpstSelect = xmSelect.render({
+		el: '#rpst_select',
+		name: 'rpstIds',
+		data: rpstDatas,
+		filterable: true,
+		size: 'mini',
+		paging: true,
+		direction: 'down'
+	});
+
+
 	layui.use(['table', 'form', 'layer'], function(){
 		var table = layui.table;
 		var form = layui.form;
@@ -114,7 +140,7 @@
 				,{field:'sex', width:80, title: '性别', sort: true, templet: '#sexTpl'}
 				,{field:'phone', width:200, title: '联系方式'}
 				,{field:'email', width:200, title: '邮箱'}
-				,{field:'level', title: '用户等级', minWidth: 150, sort: true, templet: '#levelTpl'}
+				,{field:'level', title: '管理的仓库', minWidth: 150, sort: true, templet: '#rpstTpl'}
 				,{width:200,title:'操作', toolbar:'#barDemo'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
@@ -142,7 +168,7 @@
 			switch(obj.event){
 				case 'addUser':
 					$('#user_form form')[0].reset();
-					$('#submit_method').val("post");
+					rpstSelect.setValue([]);
 					layer.open({
 						type: 1,
 						title: '新增用户',
@@ -173,7 +199,7 @@
 				});
 			} else if(obj.event === 'edit'){
 				form.val('user_form', obj.data);
-				$('#submit_method').val("put");
+				rpstSelect.setValue(obj.data.rpstIds);
 				layer.open({
 					type: 1,
 					title: '编辑用户信息',
@@ -186,6 +212,7 @@
 		// 监听form表单提交
 		form.on('submit(form_submit)', function(data) {
 			var method = data.field.id == ''? 'post' : 'put';
+			data.field.rpstIds = rpstSelect.getValue('value');
 			$.ajax({
 				type: method,
 				url: "/user/user",

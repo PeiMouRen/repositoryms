@@ -74,16 +74,6 @@
 	{{# } }}
 </script>
 
-<script type="text/html" id="levelTpl">
-	{{#  if(d.level == 1){ }}
-	管理员
-	{{#  } else if(d.level == 2) { }}
-	高级操作员
-	{{#  } else if(d.level == 3) { }}
-	普通操作员
-	{{# } }}
-</script>
-
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script src="/js/xm-select.js" charset="utf-8"></script>
@@ -159,6 +149,7 @@
 			switch(obj.event){
 				case 'addRpst':
 					$('#rpst_form form')[0].reset();
+					userSelect.setValue([]);
 					layer.open({
 						type: 1,
 						title: '新增仓库',
@@ -166,7 +157,6 @@
 						content: $('#rpst_form')
 					});
 					break;
-
 			};
 		});
 
@@ -189,12 +179,7 @@
 				});
 			} else if(obj.event === 'edit'){
 				form.val('rpst_form', obj.data);
-				var users = obj.data.users;
-				var selectUserIds = [];
-				for (var i = 0; i < users.length; i++) {
-					selectUserIds.push(users[i].id);
-				}
-				userSelect.setValue(selectUserIds);
+				userSelect.setValue(obj.data.userIds);
 
 				layer.open({
 					type: 1,
