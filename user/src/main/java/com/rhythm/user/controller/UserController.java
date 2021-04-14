@@ -1,6 +1,8 @@
 package com.rhythm.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rhythm.common.Enum.UserLevel;
 import com.rhythm.user.entity.User;
 import com.rhythm.user.result.Result;
 import com.rhythm.user.service.IUserService;
@@ -64,7 +66,7 @@ public class UserController {
     @ResponseBody
     @GetMapping(value = "/users")
     public Result users(Page page) {
-        page = userService.page(page);
+        page = userService.page(page, new QueryWrapper<User>().ne("level", UserLevel.ADMIN.getLevel()));
         Result result = Result.ok();
         result.setTotal(page.getTotal());
         result.setData(page.getRecords());

@@ -6,7 +6,6 @@ import com.rhythm.user.result.Result;
 import com.rhythm.user.service.inter.IRpstService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -29,11 +28,13 @@ public class RpstController {
 
     @PostMapping(value = "/rpst")
     public Result addRpst(@RequestBody Rpst rpst) {
+        log.info("新增仓库：" + rpst.toString());
         return rpstService.addRpst(rpst);
     }
 
     @PutMapping(value = "/rpst")
     public Result updateRpst(@RequestBody Rpst rpst) {
+        log.info("更新仓库：" + rpst.toString());
         return rpstService.updateRpst(rpst);
     }
 

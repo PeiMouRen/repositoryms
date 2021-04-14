@@ -2,6 +2,9 @@ package com.rhythm.rpst.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rhythm.common.Enum.UserLevel;
+import com.rhythm.common.entity.User;
 import com.rhythm.common.result.Result;
 import com.rhythm.rpst.entity.Rpst;
 import com.rhythm.rpst.service.IRpstService;
@@ -27,25 +30,24 @@ public class RpstController {
 
     @Autowired
     private IRpstService rpstService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @GetMapping(value = "/rpsts")
     public Result getRpsts(Page page, HttpSession session) {
-        int userId = 1;
-        Object userIdObj = session.getAttribute("userId");
-        log.info("验证user对象的存储：" + session.getAttribute("user"));
-        if (userIdObj != null) {
-            userId = (int)userIdObj;
-            log.info("获取到userid：" + userId);
-        } else {
-            log.info("没有获取到userid");
+        User user = null;
+        try {
+            user = objectMapper.readValue((String)session.getAttribute("user"), User.class);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Enumeration<String> test = session.getAttributeNames();
-        log.info("获取session中所有属性：");
-        while (test.hasMoreElements()) {
-            String name = test.nextElement().toString();
-            log.info(name + ": " + session.getAttribute(name));
+        if (user != null) {
+            if (UserLevel.ADMIN.getLevel() == user.getLevel()) {
+                page = rpstService.getRpsts(page);
+            } else {
+                page = rpstService.getRpstsByUserId(page, user.getId());
+            }
         }
-        page = rpstService.getRpstsByUserId(page, userId);
         Result result = Result.ok();
         result.setTotal(page.getTotal());
         result.setData(page.getRecords());
@@ -55,14 +57,14 @@ public class RpstController {
     @PostMapping(value = "/rpst")
     public Result addRpst(@RequestBody Rpst rpst) {
         log.info("新增仓库，" + rpst.toString());
-        rpstService.save(rpst);
+        rpstService.addRpst(rpst);
         return Result.ok();
     }
 
     @PutMapping(value = "/rpst")
     public Result updateRpst(@RequestBody Rpst rpst) {
         log.info("更新仓库信息，" + rpst.toString());
-        rpstService.updateById(rpst);
+        rpstService.updRpst(rpst);
         Result result = Result.ok();
         result.setData(rpst);
         return result;
@@ -71,7 +73,7 @@ public class RpstController {
     @DeleteMapping(value = "/rpst/{id}")
     public Result DeleteRpst(@PathVariable Integer id) {
         log.info("删除仓库信息，仓库id为：" + id);
-        rpstService.removeById(id);
+        rpstService.delRpst(id);
         return Result.ok();
     }
 

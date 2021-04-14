@@ -101,7 +101,7 @@
 				for (var i = 0; i < result.data.length; i++) {
 					var user = result.data[i];
 					var userData = {name : user.username, value : user.id, selected : false};
-					userDatas.push(userData)
+					userDatas.push(userData);
 				}
 			}
 		}
@@ -129,10 +129,10 @@
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
 				{field:'id', width:80, title: '仓库编号', sort: true}
-				,{field:'name', width:160, title: '仓库名'}
-				,{field:'place', width:80, title: '仓库地点'}
+				,{field:'name', width:100, title: '仓库名'}
+				,{field:'place', width:200, title: '仓库地点'}
 				,{field:'size', width:200, title: '仓库大小', sort: true}
-				,{width:200,title:'操作', toolbar:'#barDemo'}
+				,{width:300,title:'操作', toolbar:'#barDemo'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
 				layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
@@ -159,7 +159,6 @@
 			switch(obj.event){
 				case 'addRpst':
 					$('#rpst_form form')[0].reset();
-					$('#submit_method').val("post");
 					layer.open({
 						type: 1,
 						title: '新增仓库',
@@ -209,8 +208,7 @@
 		// 监听form表单提交
 		form.on('submit(form_submit)', function(data) {
 			var method = data.field.id == ''? 'post' : 'put';
-			console.log(JSON.stringify(data.field));
-			return;
+			data.field.userIds = userSelect.getValue('value');
 			$.ajax({
 				type: method,
 				url: "/rpst/rpst",
@@ -220,7 +218,7 @@
 				success: function(result) {
 					if (result.code == 200) {
 						layer.closeAll();
-						userTable.reload({}, false);
+						rpstTable.reload({}, false);
 						layer.msg('更新成功！', {icon : 1});
 					}
 				}

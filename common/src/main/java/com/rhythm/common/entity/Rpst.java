@@ -34,4 +34,6 @@ public class Rpst implements Serializable {
     private Integer size;
 
     private List<User> users;
+
+    private List<Integer> userIds;
 }

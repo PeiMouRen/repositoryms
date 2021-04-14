@@ -28,6 +28,10 @@ public class FeignClientInterceptor implements RequestInterceptor {
             log.info("传递请求头参数:");
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
+                // 跳过 content-length
+                if ("content-length".equals(headerName)) {
+                    continue;
+                }
                 Enumeration<String> headerValues = request.getHeaders(headerName);
                 while (headerValues.hasMoreElements()) {
                     String headerValue = headerValues.nextElement();
