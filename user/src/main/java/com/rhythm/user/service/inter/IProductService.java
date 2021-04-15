@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public interface IProductService {
 
     @PostMapping(value = "/product/product")
-    Result addProduct(@SpringQueryMap Product product);
+    Result addProduct(@RequestBody Product product);
 
     @DeleteMapping(value = "/product/product/{id}")
     Result DeleteProduct(@PathVariable Integer id);

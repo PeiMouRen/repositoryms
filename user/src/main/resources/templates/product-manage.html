@@ -12,7 +12,7 @@
 <body>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
-<div style="display: none" id="product_form">
+<div style="display: none;" id="product_form">
 	<form class="layui-form" onsubmit="return false;" lay-filter="product_form">
 		<input type="text" name="id" id="product_id" value="" style="display: none" />
 		<div class="layui-form-item">
@@ -36,6 +36,29 @@
 	</form>
 </div>
 
+<div style="display: none; overflow: hidden" id="inStorage_form">
+	<form class="layui-form" onsubmit="return false;" lay-filter="inStorage_form">
+		<input type="hidden" id="inStorage_product_id" name="productId" value="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">选择仓库</label>
+			<div class="layui-input-block">
+				<div id="inStorage_rpst_select" class="xm-select-demo"></div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">入库数量</label>
+			<div class="layui-input-block">
+				<input type="text" name="productNum" required  lay-verify="required|number" placeholder="请输入入库数量" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="inStorage_form_submit">确定</button>
+			</div>
+		</div>
+	</form>
+</div>
+
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
 		<button class="layui-btn layui-btn-sm" lay-event="addRpst">新增产品</button>
@@ -45,21 +68,9 @@
 <script type="text/html" id="barDemo">
 	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 	<a class="layui-btn layui-btn-xs" lay-event="inStorage">入库</a>
-	<a class="layui-btn layui-btn-xs" lay-event="outStorage">出库</a>
-	{{# if(d.level != 1) { }}
 	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-	{{# } }}
 </script>
 
-<script type="text/html" id="sexTpl">
-	{{#  if(d.sex == 0){ }}
-	女
-	{{#  } else if(d.sex == 1) { }}
-	男
-	{{#  } else { }}
-	未知
-	{{# } }}
-</script>
 <script type="text/html" id="userTpl">
 	{{#
 		var nameArr = [];
@@ -93,8 +104,8 @@
 			}
 		}
 	})
-	var rpstSelect = xmSelect.render({
-		el: '#rpst_select',
+	var inStorageRpstSelect = xmSelect.render({
+		el: '#inStorage_rpst_select',
 		name: 'rpstIds',
 		data: rpstDatas,
 		filterable: true,
@@ -109,7 +120,7 @@
 		var form = layui.form;
 		var layer = layui.layer;
 
-		var rpstTable = table.render({
+		var productTable = table.render({
 			elem: '#test'
 			,url:'/product/products'
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
@@ -150,10 +161,9 @@
 			switch(obj.event){
 				case 'addRpst':
 					$('#product_form form')[0].reset();
-					userSelect.setValue([]);
 					layer.open({
 						type: 1,
-						title: '新增仓库',
+						title: '新增产品',
 						area: ['400px', '400px'],
 						content: $('#product_form')
 					});
@@ -164,10 +174,10 @@
 		//监听工具条
 		table.on('tool(test)', function(obj){
 			if(obj.event === 'del'){
-				layer.confirm('确定删除该仓库？', function(index){
+				layer.confirm('确定删除该产品？', function(index){
 					$.ajax({
 						type: "delete",
-						url: "/rpst/rpst/" + obj.data.id,
+						url: "/product/product/" + obj.data.id,
 						dataType: "json",
 						success: function(result) {
 							if (result.code == 200) {
@@ -175,41 +185,70 @@
 							}
 						}
 					})
-					rpstTable.reload({}, false);
+					productTable.reload({}, false);
 					layer.close(index);
 				});
 			} else if(obj.event === 'edit'){
 				form.val('product_form', obj.data);
-				userSelect.setValue(obj.data.userIds);
 
 				layer.open({
 					type: 1,
-					title: '编辑仓库信息',
+					title: '编辑产品信息',
 					area: ['400px', '400px'],
 					content: $('#product_form')
 				});
+			} else if(obj.event === 'inStorage') {
+				$('#inStorage_product_id').val(obj.data.id);
+				inStorageRpstSelect.setValue([]);
+				$('#inStorage_form form')[0].reset();
+				layer.open({
+					type: 1,
+					title: '产品入库',
+					area: ['410px', '250px'],
+					scrollbar: false,
+					content: $('#inStorage_form')
+				});
+
 			}
 		});
 
 		// 监听form表单提交
 		form.on('submit(form_submit)', function(data) {
 			var method = data.field.id == ''? 'post' : 'put';
-			data.field.userIds = userSelect.getValue('value');
 			$.ajax({
 				type: method,
-				url: "/rpst/rpst",
+				url: "/product/product",
 				contentType:"application/json;charset=utf-8",
 				data: JSON.stringify(data.field),
 				dataType: "json",
 				success: function(result) {
 					if (result.code == 200) {
 						layer.closeAll();
-						rpstTable.reload({}, false);
+						productTable.reload({}, false);
 						layer.msg('更新成功！', {icon : 1});
 					}
 				}
 			})
 		});
+		form.on('submit(inStorage_form_submit)', function(data) {
+			data.field.rpstIds = inStorageRpstSelect.getValue('value');
+			console.log(JSON.stringify(data.field));
+			return false;
+			$.ajax({
+				type: 'post',
+				url: "/product/product",
+				contentType:"application/json;charset=utf-8",
+				data: JSON.stringify(data.field),
+				dataType: "json",
+				success: function(result) {
+					if (result.code == 200) {
+						layer.closeAll();
+						layer.msg('产品入库成功！', {icon : 1});
+					}
+				}
+			})
+		});
+
 
 	});
 </script>

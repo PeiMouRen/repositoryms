@@ -29,7 +29,7 @@ spring:
     store-type: redis
 
 server:
-  port: 8084
+  port: 8085
 
 eureka:
   client:
