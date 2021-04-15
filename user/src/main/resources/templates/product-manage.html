@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
-	<title>用户管理</title>
+	<title>产品管理</title>
 	<meta name="renderer" content="webkit">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,44 +10,23 @@
 	<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
-
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
-<div style="display: none" id="user_form">
-	<form class="layui-form" onsubmit="return false;" method="post" lay-filter="user_form">
-		<input type="text" name="id" id="user_id" value="" style="display: none" />
+<div style="display: none" id="product_form">
+	<form class="layui-form" onsubmit="return false;" lay-filter="product_form">
+		<input type="text" name="id" id="product_id" value="" style="display: none" />
 		<div class="layui-form-item">
-			<label class="layui-form-label">用户名</label>
+			<label class="layui-form-label">产品类型</label>
 			<div class="layui-input-block">
-				<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+				<input type="text" name="type" required  lay-verify="required" placeholder="请输入产品类型" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">单选框</label>
+			<label class="layui-form-label">产品名称</label>
 			<div class="layui-input-block">
-				<input type="radio" name="sex" value="1" title="男">
-				<input type="radio" name="sex" value="0" title="女" checked>
+				<input type="text" name="name" required  lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input">
 			</div>
 		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">手机号</label>
-			<div class="layui-input-block">
-				<input type="text" name="phone" required  lay-verify="required|phone|number" placeholder="请输入手机号" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">邮箱</label>
-			<div class="layui-input-block">
-				<input type="text" name="email" required  lay-verify="required|email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">管理的仓库</label>
-			<div class="layui-input-block">
-				<div id="rpst_select" class="xm-select-demo"></div>
-			</div>
-		</div>
-
 		<div class="layui-form-item">
 			<div class="layui-input-block">
 				<button class="layui-btn" lay-submit lay-filter="form_submit">确定</button>
@@ -59,13 +38,15 @@
 
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
-		<button class="layui-btn layui-btn-sm" lay-event="addUser">新增用户</button>
+		<button class="layui-btn layui-btn-sm" lay-event="addRpst">新增产品</button>
 	</div>
 </script>
 
 <script type="text/html" id="barDemo">
-	{{# if(d.level != 1) { }}
 	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	<a class="layui-btn layui-btn-xs" lay-event="inStorage">入库</a>
+	<a class="layui-btn layui-btn-xs" lay-event="outStorage">出库</a>
+	{{# if(d.level != 1) { }}
 	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 	{{# } }}
 </script>
@@ -79,12 +60,11 @@
 	未知
 	{{# } }}
 </script>
-
-<script type="text/html" id="rpstTpl">
+<script type="text/html" id="userTpl">
 	{{#
 		var nameArr = [];
-		for (var i = 0; i < d.rpstIds.length; i++) {
-			nameArr.push(rpstDatas.filter(item => item.value == d.rpstIds[i])[0].name);
+		for (var i = 0; i < d.userIds.length; i++) {
+			nameArr.push(userDatas.filter(item => item.value == d.userIds[i])[0].name);
 		}
 
 	}}
@@ -129,19 +109,16 @@
 		var form = layui.form;
 		var layer = layui.layer;
 
-		var userTable = table.render({
+		var rpstTable = table.render({
 			elem: '#test'
-			,url:'/user/users'
+			,url:'/product/products'
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
-				{field:'id', width:80, title: '用户编号', sort: true}
-				,{field:'username', width:160, title: '用户名'}
-				,{field:'sex', width:80, title: '性别', sort: true, templet: '#sexTpl'}
-				,{field:'phone', width:200, title: '联系方式'}
-				,{field:'email', width:200, title: '邮箱'}
-				,{field:'rpsts', title: '管理的仓库', minWidth: 150, sort: true, templet: '#rpstTpl'}
-				,{width:200,title:'操作', toolbar:'#barDemo'}
+				{field:'id', width:80, title: '产品编号', sort: true}
+				,{field:'type', width:100, title: '产品类型'}
+				,{field:'name', width:200, title: '产品名称'}
+				,{width:300,title:'操作', toolbar:'#barDemo'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
 				layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
@@ -161,32 +138,36 @@
 				,countName: 'total' //数据总数的字段名称，默认：count
 				,dataName: 'data' //数据列表的字段名称，默认：data
 			}
+			,done: function(res, curr, count) {
+				if ($('#user_level').val() != 1) {
+
+				}
+			}
 		});
 
 		//头工具栏事件
 		table.on('toolbar(test)', function(obj){
 			switch(obj.event){
-				case 'addUser':
-					$('#user_form form')[0].reset();
-					rpstSelect.setValue([]);
+				case 'addRpst':
+					$('#product_form form')[0].reset();
+					userSelect.setValue([]);
 					layer.open({
 						type: 1,
-						title: '新增用户',
+						title: '新增仓库',
 						area: ['400px', '400px'],
-						content: $('#user_form')
+						content: $('#product_form')
 					});
 					break;
-
 			};
 		});
 
 		//监听工具条
 		table.on('tool(test)', function(obj){
 			if(obj.event === 'del'){
-				layer.confirm('确定删除该用户', function(index){
+				layer.confirm('确定删除该仓库？', function(index){
 					$.ajax({
 						type: "delete",
-						url: "/user/user/" + obj.data.id,
+						url: "/rpst/rpst/" + obj.data.id,
 						dataType: "json",
 						success: function(result) {
 							if (result.code == 200) {
@@ -194,17 +175,18 @@
 							}
 						}
 					})
-					userTable.reload({}, false);
+					rpstTable.reload({}, false);
 					layer.close(index);
 				});
 			} else if(obj.event === 'edit'){
-				form.val('user_form', obj.data);
-				rpstSelect.setValue(obj.data.rpstIds);
+				form.val('product_form', obj.data);
+				userSelect.setValue(obj.data.userIds);
+
 				layer.open({
 					type: 1,
-					title: '编辑用户信息',
+					title: '编辑仓库信息',
 					area: ['400px', '400px'],
-					content: $('#user_form')
+					content: $('#product_form')
 				});
 			}
 		});
@@ -212,24 +194,22 @@
 		// 监听form表单提交
 		form.on('submit(form_submit)', function(data) {
 			var method = data.field.id == ''? 'post' : 'put';
-			data.field.rpstIds = rpstSelect.getValue('value');
+			data.field.userIds = userSelect.getValue('value');
 			$.ajax({
 				type: method,
-				url: "/user/user",
+				url: "/rpst/rpst",
 				contentType:"application/json;charset=utf-8",
 				data: JSON.stringify(data.field),
 				dataType: "json",
 				success: function(result) {
 					if (result.code == 200) {
 						layer.closeAll();
-						userTable.reload({}, false);
+						rpstTable.reload({}, false);
 						layer.msg('更新成功！', {icon : 1});
 					}
 				}
 			})
 		});
-
-
 
 	});
 </script>
