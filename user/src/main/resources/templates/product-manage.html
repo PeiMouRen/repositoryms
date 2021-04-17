@@ -61,25 +61,18 @@
 
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
-		<button class="layui-btn layui-btn-sm" lay-event="addRpst">新增产品</button>
+		<div id="rpst_select" class="xm-select-demo"></div>
+		<button class="layui-btn layui-btn-sm" lay-event="getAllProduct">获取所有产品</button>
+		<button class="layui-btn layui-btn-sm" lay-event="addProduct">新增产品</button>
 	</div>
 </script>
 
 <script type="text/html" id="barDemo">
 	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 	<a class="layui-btn layui-btn-xs" lay-event="inStorage">入库</a>
-	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
-
-<script type="text/html" id="userTpl">
-	{{#
-		var nameArr = [];
-		for (var i = 0; i < d.userIds.length; i++) {
-			nameArr.push(userDatas.filter(item => item.value == d.userIds[i])[0].name);
-		}
-
-	}}
-	{{ nameArr.toString()}}
+	{{# if(d.level == 1) { }}
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	{{# } }}
 </script>
 
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
@@ -88,6 +81,7 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
+	var rpstSelect;
 	var rpstDatas = [];
 	$.ajax({
 		type: "get",
@@ -150,9 +144,21 @@
 				,dataName: 'data' //数据列表的字段名称，默认：data
 			}
 			,done: function(res, curr, count) {
-				if ($('#user_level').val() != 1) {
+				rpstSelect = xmSelect.render({
+					el: '#rpst_select',
+					name: 'rpstId',
+					data: rpstDatas,
+					filterable: true,
+					size: 'mini',
+					paging: true,
+					radio: true,
+					tips: '请选择仓库',
+					clickClose: true,
+					direction: 'down',
+					on: function({ arr, change, isAdd }) {
 
-				}
+					}
+				});
 			}
 		});
 

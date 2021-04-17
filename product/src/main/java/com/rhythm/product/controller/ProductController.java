@@ -7,6 +7,7 @@ import com.rhythm.common.entity.User;
 import com.rhythm.common.result.Result;
 import com.rhythm.product.entity.Product;
 import com.rhythm.product.service.IProductService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,21 @@ public class ProductController {
 
     @Autowired
     private IProductService productService;
+
+    @GetMapping(value = "/inventory")
+    public Result getInventory(Page page, Integer rpstId) {
+        page = productService.getInventory(page, rpstId);
+        Result result = Result.ok();
+        result.setTotal(page.getTotal());
+        result.setData(page.getRecords());
+        return result;
+    }
+
+    @PutMapping(value = "/inventory")
+    public Result updateInventory(Integer rpstId, Integer productId, Integer productNum, Integer operate) {
+        productService.updateInventory(rpstId, productId, productNum, operate);
+        return Result.ok();
+    }
 
     @PostMapping(value = "/product")
     public Result addProduct(@RequestBody Product product) {

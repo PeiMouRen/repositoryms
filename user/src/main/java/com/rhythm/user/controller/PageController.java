@@ -34,7 +34,13 @@ public class PageController {
     }
 
     @RequestMapping(value = "/product-manage")
-    public String productManage() {
+    public String productManage(Model model, HttpSession session) {
+        try {
+            User user = objectMapper.readValue((String)session.getAttribute("user"), User.class);
+            model.addAttribute("userLevel", user.getLevel());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         return "product-manage";
     }
 

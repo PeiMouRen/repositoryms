@@ -52,12 +52,6 @@ public class RpstServiceImpl extends ServiceImpl<RpstMapper, Rpst> implements IR
     }
 
     @Override
-    public void delRpst(Integer rpstId) {
-        rpstMapper.deleteById(rpstId);
-        rpstMapper.delRelationByRpstId(rpstId);
-    }
-
-    @Override
     public void updRpst(Rpst rpst) {
         rpstMapper.updateById(rpst);
 

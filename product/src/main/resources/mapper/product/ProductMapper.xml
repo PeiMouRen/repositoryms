@@ -12,4 +12,8 @@
         where rpstId = #{rpstId} and productId = #{productId}
     </update>
 
+    <select id="selectInventory" resultType="map">
+        select * from rpst_product where rpstId = #{rpstId}
+    </select>
+
 </mapper>

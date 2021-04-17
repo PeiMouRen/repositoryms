@@ -22,8 +22,6 @@ public interface IRpstService extends IService<Rpst> {
 
     void addRpst(Rpst rpst);
 
-    void delRpst(Integer rpstId);
-
     void updRpst(Rpst rpst);
 
 }

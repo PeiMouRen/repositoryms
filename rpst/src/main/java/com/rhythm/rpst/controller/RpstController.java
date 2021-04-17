@@ -73,7 +73,7 @@ public class RpstController {
     @DeleteMapping(value = "/rpst/{id}")
     public Result DeleteRpst(@PathVariable Integer id) {
         log.info("删除仓库信息，仓库id为：" + id);
-        rpstService.delRpst(id);
+        rpstService.removeById(id);
         return Result.ok();
     }
 
