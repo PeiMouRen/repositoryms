@@ -1,7 +1,12 @@
 package com.rhythm.product;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rhythm.common.entity.Rpst;
+import com.rhythm.common.result.Result;
 import com.rhythm.product.mapper.ProductMapper;
+import com.rhythm.product.service.inter.IRpstService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,14 +24,20 @@ public class test {
 
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private IRpstService rpstService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     public void test() {
-        Page<Map<String, Integer>> page = new Page(2,1);
-        page = productMapper.selectInventory(page,1);
-        log.info(page.getTotal() + "");
-        for (Map<String, Integer> map : page.getRecords()) {
-            log.info(map.toString());
-        }
+        Result result = rpstService.getRpst(1);
+        Object obj = result.getData();
+        log.info(obj.toString());
+        Map<String, Object> map = (Map<String, Object>)obj;
+        log.info(map.toString());
+        int size = (int)map.get("size");
+        //int size = Integer.parseInt(map.get("size"));
+
     }
 }

@@ -7,11 +7,14 @@ import com.rhythm.common.entity.User;
 import com.rhythm.common.result.Result;
 import com.rhythm.product.entity.Product;
 import com.rhythm.product.service.IProductService;
+import com.rhythm.product.service.inter.IRpstService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpSession;
  * @author xzpei
  * @since 2021-04-15
  */
+@Slf4j
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -28,8 +32,14 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
-    @GetMapping(value = "/inventory")
-    public Result getInventory(Page page, Integer rpstId) {
+    @GetMapping(value = "/inventory/{rpstId}")
+    public Result getInventory(Page page, @PathVariable Integer rpstId) {
+        log.info("获取库存信息：");
+        log.info("分页详情" + page.toString());
+        log.info("仓库id：" + rpstId);
+        if (rpstId == -1) {
+            return Result.ok();
+        }
         page = productService.getInventory(page, rpstId);
         Result result = Result.ok();
         result.setTotal(page.getTotal());
@@ -38,9 +48,10 @@ public class ProductController {
     }
 
     @PutMapping(value = "/inventory")
-    public Result updateInventory(Integer rpstId, Integer productId, Integer productNum, Integer operate) {
-        productService.updateInventory(rpstId, productId, productNum, operate);
-        return Result.ok();
+    public Result updateInventory(@RequestBody Map<String, Integer> param) {
+        log.info("更新库存：");
+        log.info(param.toString());
+        return productService.updateInventory(param.get("rpstId"), param.get("productId"), param.get("productNum"), param.get("operate"));
     }
 
     @PostMapping(value = "/product")

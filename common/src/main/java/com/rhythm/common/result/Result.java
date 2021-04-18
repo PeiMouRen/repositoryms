@@ -29,9 +29,9 @@ public class Result {
 
     public static Result error(){
         Result r = new Result();
-        r.setCode(ResultCode.UNKNOW_REASON.getCode());
-        r.setSuccess(ResultCode.UNKNOW_REASON.getStatus());
-        r.setMessage(ResultCode.UNKNOW_REASON.getMessage());
+        r.setCode(ResultCode.ERROR.getCode());
+        r.setSuccess(ResultCode.ERROR.getStatus());
+        r.setMessage(ResultCode.ERROR.getMessage());
         return r;
     }
 

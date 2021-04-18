@@ -33,6 +33,17 @@ public class PageController {
         return "rpst-manage";
     }
 
+    @RequestMapping(value = "/rpst-info")
+    public String rpstInfo(Model model, HttpSession session) {
+        try {
+            User user = objectMapper.readValue((String)session.getAttribute("user"), User.class);
+            model.addAttribute("userLevel", user.getLevel());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return "rpst-info";
+    }
+
     @RequestMapping(value = "/product-manage")
     public String productManage(Model model, HttpSession session) {
         try {

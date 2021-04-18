@@ -48,7 +48,9 @@ public class RpstServiceImpl extends ServiceImpl<RpstMapper, Rpst> implements IR
     @Override
     public void addRpst(Rpst rpst) {
         rpstMapper.insert(rpst);
-        rpstMapper.addRelation(rpst.getId(), rpst.getUserIds());
+        if (rpst.getUserIds() != null && rpst.getUserIds().size() != 0) {
+            rpstMapper.addRelation(rpst.getId(), rpst.getUserIds());
+        }
     }
 
     @Override

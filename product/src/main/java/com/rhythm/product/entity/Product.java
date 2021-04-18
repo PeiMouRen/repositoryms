@@ -1,6 +1,7 @@
 package com.rhythm.product.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class Product implements Serializable {
     private String type;
 
     private String name;
+
+    @TableField(exist = false)
+    private Integer productNum;
 
 
 }

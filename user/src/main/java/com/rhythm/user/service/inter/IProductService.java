@@ -7,8 +7,16 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @FeignClient(value = "product")
 public interface IProductService {
+
+    @PutMapping(value = "/product/inventory")
+    Result updateInventory(@RequestBody Map<String, Integer> param);
+
+    @GetMapping(value = "/product/inventory/{rpstId}")
+    Result getInventory(@SpringQueryMap Page page, @PathVariable Integer rpstId);
 
     @PostMapping(value = "/product/product")
     Result addProduct(@RequestBody Product product);

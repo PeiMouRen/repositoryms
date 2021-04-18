@@ -11,14 +11,13 @@ layui.use(['layer', 'element'], function() {
 
         var isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
         if (isActive.length > 0) {
-            element.tabChange('tab', id);
-        } else {
-            element.tabAdd('tab', {
-                title : test,
-                content : '<iframe src="' + url + '" name="iframe' + id + '" class="iframe" framborder="0" data-id="' + id + '" scrolling="auto" width="100%"  height="100%"></iframe>',
-                id : id
-            });
-            element.tabChange('tab', id);
+            element.tabDelete('tab', id);
         }
+        element.tabAdd('tab', {
+            title : test,
+            content : '<iframe src="' + url + '" name="iframe' + id + '" class="iframe" framborder="0" data-id="' + id + '" scrolling="auto" width="100%"  height="100%"></iframe>',
+            id : id
+        });
+        element.tabChange('tab', id);
     })
 })

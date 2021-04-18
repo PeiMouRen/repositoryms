@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum ResultCode {
 
     SUCCESS(true,200,"成功"),
-    UNKNOW_REASON(false,201,"未知错误");
+    ERROR(false,201,"错误");
     /*BAD_SQL_GRAMMER(false,21001,"sql语法错误"),
     JSON_PARSE_ERROR(false,21002,"json解析异常"),
     PARAM_ERROR(false,21003,"参数不正确"),

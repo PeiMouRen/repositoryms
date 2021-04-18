@@ -48,7 +48,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">入库数量</label>
 			<div class="layui-input-block">
-				<input type="text" name="productNum" required  lay-verify="required|number" placeholder="请输入入库数量" autocomplete="off" class="layui-input">
+				<input type="text" name="productNum" required id="inStorage_product_num"  lay-verify="required|number" placeholder="请输入入库数量" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
@@ -61,16 +61,14 @@
 
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
-		<div id="rpst_select" class="xm-select-demo"></div>
-		<button class="layui-btn layui-btn-sm" lay-event="getAllProduct">获取所有产品</button>
 		<button class="layui-btn layui-btn-sm" lay-event="addProduct">新增产品</button>
 	</div>
 </script>
-
+<input type="hidden" id="user_level" th:value="${userLevel}">
 <script type="text/html" id="barDemo">
 	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 	<a class="layui-btn layui-btn-xs" lay-event="inStorage">入库</a>
-	{{# if(d.level == 1) { }}
+	{{# if($('#user_level').val() == 1) { }}
 		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 	{{# } }}
 </script>
@@ -81,7 +79,7 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
-	var rpstSelect;
+	var inStorageRpstSelect;
 	var rpstDatas = [];
 	$.ajax({
 		type: "get",
@@ -98,13 +96,15 @@
 			}
 		}
 	})
-	var inStorageRpstSelect = xmSelect.render({
+	inStorageRpstSelect = xmSelect.render({
 		el: '#inStorage_rpst_select',
 		name: 'rpstIds',
 		data: rpstDatas,
 		filterable: true,
 		size: 'mini',
 		paging: true,
+		radio: true,
+		clickClose: true,
 		direction: 'down'
 	});
 
@@ -144,28 +144,14 @@
 				,dataName: 'data' //数据列表的字段名称，默认：data
 			}
 			,done: function(res, curr, count) {
-				rpstSelect = xmSelect.render({
-					el: '#rpst_select',
-					name: 'rpstId',
-					data: rpstDatas,
-					filterable: true,
-					size: 'mini',
-					paging: true,
-					radio: true,
-					tips: '请选择仓库',
-					clickClose: true,
-					direction: 'down',
-					on: function({ arr, change, isAdd }) {
 
-					}
-				});
 			}
 		});
 
 		//头工具栏事件
 		table.on('toolbar(test)', function(obj){
 			switch(obj.event){
-				case 'addRpst':
+				case 'addProduct':
 					$('#product_form form')[0].reset();
 					layer.open({
 						type: 1,
@@ -237,19 +223,24 @@
 			})
 		});
 		form.on('submit(inStorage_form_submit)', function(data) {
-			data.field.rpstIds = inStorageRpstSelect.getValue('value');
-			console.log(JSON.stringify(data.field));
-			return false;
+			var data = {};
+			data.rpstId = inStorageRpstSelect.getValue()[0].value;
+			data.productId = $('#inStorage_product_id').val();
+			data.productNum = $('#inStorage_product_num').val();
+			data.operate = 1;
 			$.ajax({
-				type: 'post',
-				url: "/product/product",
+				type: 'put',
+				url: "/product/inventory",
 				contentType:"application/json;charset=utf-8",
-				data: JSON.stringify(data.field),
+				data: JSON.stringify(data),
 				dataType: "json",
 				success: function(result) {
 					if (result.code == 200) {
 						layer.closeAll();
 						layer.msg('产品入库成功！', {icon : 1});
+					} else if (result.code == 201) {
+						layer.closeAll();
+						layer.msg(result.message, {icon : 2});
 					}
 				}
 			})

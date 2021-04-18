@@ -1,4 +1,4 @@
-package com.rhythm.product;
+package com.rhythm.order;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -11,11 +11,11 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @SpringBootApplication
 @EnableRedisHttpSession
 @EnableFeignClients
-@MapperScan("com.rhythm.product.mapper")
-public class ProductApplication {
+@MapperScan("com.rhythm.order.mapper")
+public class OrderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProductApplication.class, args);
+        SpringApplication.run(OrderApplication.class, args);
     }
 
 }

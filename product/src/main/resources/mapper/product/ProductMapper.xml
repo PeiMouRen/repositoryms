@@ -13,7 +13,7 @@
     </update>
 
     <select id="selectInventory" resultType="map">
-        select * from rpst_product where rpstId = #{rpstId}
+        select * from rpst_product where rpstId = #{rpstId} and productNum != 0
     </select>
 
 </mapper>
