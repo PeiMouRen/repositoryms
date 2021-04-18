@@ -46,7 +46,7 @@ public class CodeGenerator {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/product/src/main/java");
+        gc.setOutputDir(projectPath + "/order/src/main/java");
         gc.setAuthor("xzpei");
         gc.setOpen(false);
         gc.setFileOverride(false); // 是否覆盖生成文件
@@ -65,7 +65,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         //pc.setModuleName(scanner("模块名"));
-        pc.setModuleName("product");
+        pc.setModuleName("order");
         pc.setParent("com.rhythm");
         mpg.setPackageInfo(pc);
 
@@ -89,7 +89,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/product/src/main/resources/mapper/" + pc.getModuleName()
+                return projectPath + "/order/src/main/resources/mapper/" + pc.getModuleName()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
