@@ -2,6 +2,8 @@ package com.rhythm.product.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhythm.common.Enum.UserLevel;
 import com.rhythm.common.entity.User;
 import com.rhythm.common.result.Result;
@@ -31,6 +33,8 @@ public class ProductController {
 
     @Autowired
     private IProductService productService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @GetMapping(value = "/inventory/{rpstId}")
     public Result getInventory(Page page, @PathVariable Integer rpstId) {
@@ -48,10 +52,16 @@ public class ProductController {
     }
 
     @PutMapping(value = "/inventory")
-    public Result updateInventory(@RequestBody Map<String, Integer> param) {
+    public Result updateInventory(@RequestBody Map<String, Integer> param, HttpSession session) {
         log.info("更新库存：");
         log.info(param.toString());
-        return productService.updateInventory(param.get("rpstId"), param.get("productId"), param.get("productNum"), param.get("operate"));
+        User user = null;
+        try {
+            user = objectMapper.readValue((String)session.getAttribute("user"), User.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return productService.updateInventory(user.getId(), param.get("rpstId"), param.get("productId"), param.get("productNum"), param.get("operate"));
     }
 
     @PostMapping(value = "/product")

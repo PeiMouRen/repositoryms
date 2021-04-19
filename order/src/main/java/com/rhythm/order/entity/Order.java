@@ -45,5 +45,16 @@ public class Order implements Serializable {
 
     private String des;
 
+    @TableField(exist = false)
+    private String typeName;
+    @TableField(exist = false)
+    private String productName;
+    @TableField(exist = false)
+    private String rpstName;
+    @TableField(exist = false)
+    private String userName;
+
+
+
 
 }

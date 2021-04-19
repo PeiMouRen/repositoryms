@@ -3,6 +3,7 @@ package com.rhythm.common.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -46,5 +47,13 @@ public class Order implements Serializable {
 
     private String des;
 
+    @TableField(exist = false)
+    private String typeName;
+    @TableField(exist = false)
+    private String productName;
+    @TableField(exist = false)
+    private String rpstName;
+    @TableField(exist = false)
+    private String userName;
 
 }

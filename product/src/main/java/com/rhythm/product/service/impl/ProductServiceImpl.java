@@ -1,19 +1,25 @@
 package com.rhythm.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rhythm.common.entity.Order;
 import com.rhythm.common.entity.Rpst;
+import com.rhythm.common.entity.User;
 import com.rhythm.common.result.Result;
 import com.rhythm.product.Enum.ProductOperate;
 import com.rhythm.product.entity.Product;
 import com.rhythm.product.mapper.ProductMapper;
 import com.rhythm.product.service.IProductService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rhythm.product.service.inter.IOrderService;
 import com.rhythm.product.service.inter.IRpstService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +39,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private ProductMapper productMapper;
     @Autowired
     private IRpstService rpstService;
+    @Autowired
+    private IOrderService orderService;
 
     @Override
-    public Result updateInventory(Integer rpstId, Integer productId, Integer productNum, Integer operate) {
+    public Result updateInventory(Integer userId, Integer rpstId, Integer productId, Integer productNum, Integer operate) {
+        String des = "";
         Result result = new Result();
         log.info(rpstService.getRpst(rpstId).toString());
         Map<String, Object> rpst = (Map<String, Object>)(rpstService.getRpst(rpstId).getData());
@@ -51,6 +60,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     return result;
                 } else {
                     productMapper.insertInventory(rpstId, productId, productNum);
+                    generateOrder(userId, rpstId, productId, productNum, operate, des);
                     result.setCode(200);
                     return result;
                 }
@@ -62,6 +72,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     return result;
                 } else {
                     productMapper.updateInventory(rpstId, productId, productNum, operate);
+                    generateOrder(userId, rpstId, productId, productNum, operate, des);
                     result.setCode(200);
                     return result;
                 }
@@ -74,10 +85,24 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 return result;
             } else {
                 productMapper.updateInventory(rpstId, productId, productNum, operate);
+                generateOrder(userId, rpstId, productId, productNum, operate, des);
                 result.setCode(200);
                 return result;
             }
         }
+    }
+
+    private Result generateOrder(Integer userId, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des) {
+        Order order = new Order();
+        order.setType(operate);
+        order.setRpstId(rpstId);
+        order.setProductId(productId);
+        order.setProductNum(productNum);
+        order.setUserId(userId);
+        order.setTime(LocalDateTime.now());
+        order.setDes(des);
+        orderService.addOrder(order);
+        return orderService.addOrder(order);
     }
 
     @Override

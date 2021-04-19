@@ -1,12 +1,7 @@
 package com.rhythm.user.result;
 
-import com.rhythm.user.Enum.ResultCode;
+import com.rhythm.common.Enum.ResultCode;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
 public class Result {
@@ -34,9 +29,9 @@ public class Result {
 
     public static Result error(){
         Result r = new Result();
-        r.setCode(ResultCode.UNKNOW_REASON.getCode());
-        r.setSuccess(ResultCode.UNKNOW_REASON.getStatus());
-        r.setMessage(ResultCode.UNKNOW_REASON.getMessage());
+        r.setCode(ResultCode.ERROR.getCode());
+        r.setSuccess(ResultCode.ERROR.getStatus());
+        r.setMessage(ResultCode.ERROR.getMessage());
         return r;
     }
 

@@ -1,4 +1,4 @@
-package com.rhythm.product.service.inter;
+package com.rhythm.order.service.inter;
 
 import com.rhythm.common.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;

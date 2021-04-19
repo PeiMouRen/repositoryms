@@ -23,6 +23,7 @@
         <module>user</module>
         <module>rpst</module>
         <module>product</module>
+        <module>order</module>
     </modules>
 
     <properties>
