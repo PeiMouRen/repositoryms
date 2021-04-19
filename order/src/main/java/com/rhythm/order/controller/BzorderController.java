@@ -3,8 +3,8 @@ package com.rhythm.order.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rhythm.common.result.Result;
-import com.rhythm.order.entity.Order;
-import com.rhythm.order.service.IOrderService;
+import com.rhythm.order.entity.Bzorder;
+import com.rhythm.order.service.IBzorderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,18 +15,17 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  *
  * @author xzpei
- * @since 2021-04-18
+ * @since 2021-04-19
  */
-@Slf4j
 @RestController
+@Slf4j
 @RequestMapping("/order")
-public class OrderController {
-
+public class BzorderController {
     @Autowired
-    private IOrderService orderService;
+    private IBzorderService orderService;
 
     @PutMapping(value = "/order")
-    public Result addOrder(@RequestBody Order order) {
+    public Result addOrder(@RequestBody Bzorder order) {
         log.info("新增订单：" + order.toString());
         orderService.save(order);
         return Result.ok();

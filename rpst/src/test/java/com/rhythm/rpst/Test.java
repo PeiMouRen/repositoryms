@@ -25,27 +25,8 @@ public class Test {
 
     @org.junit.Test
     public void test() {
-        /*Page<Rpst> page = new Page(2, 2);
-        page = rpstService.getRpstsByUserId(page, 1);
-        List<Rpst> rpsts = page.getRecords();
-        for (Rpst rpst: rpsts) {
-            System.out.println(rpst.toString());
-        }*/
-
-        // rpstMapper.delRelationByRpstId(1);
-
-        /*List<Integer> userIds = new ArrayList<>();
-        userIds.add(1);
-        userIds.add(2);
-        userIds.add(3);
-        userIds.add(4);
-        rpstMapper.addRelation(1, userIds);*/
-
-        Rpst rpst = new Rpst();
-        rpst.setName("test5");
-        int i = rpstMapper.insert(rpst);
-        log.info("返回的数据：" + i);
-        log.info("获取id： " + rpst.getId());
+      Rpst rpst = rpstMapper.selectById(20);
+      log.info("hehe:" + rpst);
 
 
     }

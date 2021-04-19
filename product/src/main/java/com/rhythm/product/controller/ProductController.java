@@ -1,6 +1,7 @@
 package com.rhythm.product.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +53,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/inventory")
-    public Result updateInventory(@RequestBody Map<String, Integer> param, HttpSession session) {
+    public Result updateInventory(@RequestBody Map<String, String> param, HttpSession session) {
         log.info("更新库存：");
         log.info(param.toString());
         User user = null;
@@ -61,11 +62,17 @@ public class ProductController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return productService.updateInventory(user.getId(), param.get("rpstId"), param.get("productId"), param.get("productNum"), param.get("operate"));
+        return productService.updateInventory(user.getUsername(), Integer.parseInt(param.get("rpstId")), Integer.parseInt(param.get("productId")),
+                Integer.parseInt(param.get("productNum")), Integer.parseInt(param.get("operate")), param.get("des"));
     }
 
     @PostMapping(value = "/product")
     public Result addProduct(@RequestBody Product product) {
+        if (productService.getOne(new QueryWrapper<Product>().eq("name", product.getName())) != null) {
+            Result result = Result.error();
+            result.setMessage("新增失败，该产品已存在!");
+            return result;
+        }
         productService.save(product);
         return Result.ok();
     }

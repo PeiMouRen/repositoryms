@@ -1,10 +1,7 @@
 package com.rhythm.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rhythm.common.entity.Order;
-import com.rhythm.common.entity.Rpst;
-import com.rhythm.common.entity.User;
+import com.rhythm.common.entity.Bzorder;
 import com.rhythm.common.result.Result;
 import com.rhythm.product.Enum.ProductOperate;
 import com.rhythm.product.entity.Product;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +39,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private IOrderService orderService;
 
     @Override
-    public Result updateInventory(Integer userId, Integer rpstId, Integer productId, Integer productNum, Integer operate) {
-        String des = "";
+    public Result updateInventory(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des) {
         Result result = new Result();
         log.info(rpstService.getRpst(rpstId).toString());
         Map<String, Object> rpst = (Map<String, Object>)(rpstService.getRpst(rpstId).getData());
@@ -60,7 +55,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     return result;
                 } else {
                     productMapper.insertInventory(rpstId, productId, productNum);
-                    generateOrder(userId, rpstId, productId, productNum, operate, des);
+                    generateOrder(userName, rpstId, productId, productNum, operate, des);
                     result.setCode(200);
                     return result;
                 }
@@ -72,7 +67,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     return result;
                 } else {
                     productMapper.updateInventory(rpstId, productId, productNum, operate);
-                    generateOrder(userId, rpstId, productId, productNum, operate, des);
+                    generateOrder(userName, rpstId, productId, productNum, operate, des);
                     result.setCode(200);
                     return result;
                 }
@@ -85,23 +80,24 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 return result;
             } else {
                 productMapper.updateInventory(rpstId, productId, productNum, operate);
-                generateOrder(userId, rpstId, productId, productNum, operate, des);
+                generateOrder(userName, rpstId, productId, productNum, operate, des);
                 result.setCode(200);
                 return result;
             }
         }
     }
 
-    private Result generateOrder(Integer userId, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des) {
-        Order order = new Order();
+    private Result generateOrder(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des) {
+        Bzorder order = new Bzorder();
         order.setType(operate);
-        order.setRpstId(rpstId);
-        order.setProductId(productId);
+        order.setUserName(userName);
+        Map<String, Object> map = null;
+        map = (Map<String, Object>)(rpstService.getRpst(rpstId).getData());
+        order.setRpstName((String)map.get("name"));
+        order.setProductName(productMapper.selectById(productId).getName());
         order.setProductNum(productNum);
-        order.setUserId(userId);
         order.setTime(LocalDateTime.now());
         order.setDes(des);
-        orderService.addOrder(order);
         return orderService.addOrder(order);
     }
 

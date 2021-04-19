@@ -3,7 +3,7 @@ package com.rhythm.common.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -17,12 +17,12 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author xzpei
- * @since 2021-04-18
+ * @since 2021-04-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class Order implements Serializable {
+public class Bzorder implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,29 +31,22 @@ public class Order implements Serializable {
 
     private Integer type;
 
-    @TableField("rpstId")
-    private Integer rpstId;
+    @TableField("rpstName")
+    private String rpstName;
 
-    @TableField("productId")
-    private Integer productId;
+    @TableField("productName")
+    private String productName;
 
     @TableField("productNum")
     private Integer productNum;
 
-    @TableField("userId")
-    private Integer userId;
+    @TableField("userName")
+    private String userName;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 
     private String des;
 
-    @TableField(exist = false)
-    private String typeName;
-    @TableField(exist = false)
-    private String productName;
-    @TableField(exist = false)
-    private String rpstName;
-    @TableField(exist = false)
-    private String userName;
 
 }

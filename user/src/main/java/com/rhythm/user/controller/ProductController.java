@@ -20,7 +20,7 @@ public class ProductController {
     private IProductService productService;
 
     @PutMapping(value = "/inventory")
-    Result updateInventory(@RequestBody Map<String, Integer> param) {
+    Result updateInventory(@RequestBody Map<String, String> param) {
         log.info("更新库存：");
         log.info(param.toString());
         return productService.updateInventory(param);

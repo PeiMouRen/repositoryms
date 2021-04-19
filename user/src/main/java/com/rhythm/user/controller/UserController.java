@@ -2,9 +2,8 @@ package com.rhythm.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.rhythm.common.Enum.UserLevel;
+import com.rhythm.common.result.Result;
 import com.rhythm.user.entity.User;
-import com.rhythm.user.result.Result;
 import com.rhythm.user.service.IUserService;
 import com.rhythm.user.service.inter.IRpstService;
 import com.rhythm.user.util.CommonUtil;
@@ -34,6 +33,11 @@ public class UserController {
     public Result addUser(@RequestBody User user) {
         log.info("新增用户，" + user.toString());
         user.setPassword(CommonUtil.getMD5String("123456"));
+        if (userService.getOne(new QueryWrapper<User>().eq("username", user.getUsername())) != null) {
+            Result result = Result.error();
+            result.setMessage("新增失败，该用户已存在！");
+            return result;
+        }
         userService.addUser(user);
         return Result.ok();
     }

@@ -13,7 +13,7 @@ import java.util.Map;
 public interface IProductService {
 
     @PutMapping(value = "/product/inventory")
-    Result updateInventory(@RequestBody Map<String, Integer> param);
+    Result updateInventory(@RequestBody Map<String, String> param);
 
     @GetMapping(value = "/product/inventory/{rpstId}")
     Result getInventory(@SpringQueryMap Page page, @PathVariable Integer rpstId);

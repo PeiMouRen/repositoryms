@@ -2,7 +2,7 @@ package com.rhythm.user.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rhythm.common.entity.Rpst;
-import com.rhythm.user.result.Result;
+import com.rhythm.common.result.Result;
 import com.rhythm.user.service.inter.IRpstService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

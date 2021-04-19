@@ -23,6 +23,12 @@
 				<input type="text" name="productNum" required  lay-verify="required|number" id="storage_product_pla" placeholder="请输入入库数量" autocomplete="off" class="layui-input">
 			</div>
 		</div>
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+				<textarea name="des" id="productDes" placeholder="备注" class="layui-textarea"></textarea>
+			</div>
+		</div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">
 				<button class="layui-btn" lay-submit lay-filter="storage_form_submit">确定</button>
@@ -181,7 +187,7 @@
 			data.productId = $('#storage_product_id').val();
 			data.productNum = $('#storage_product_pla').val();
 			data.operate = operate;
-
+			data.des = $('#productDes').val();
 			$.ajax({
 				type: 'put',
 				url: "/product/inventory",

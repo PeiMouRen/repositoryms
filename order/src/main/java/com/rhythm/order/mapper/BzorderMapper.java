@@ -1,6 +1,6 @@
 package com.rhythm.order.mapper;
 
-import com.rhythm.order.entity.Order;
+import com.rhythm.order.entity.Bzorder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
  * </p>
  *
  * @author xzpei
- * @since 2021-04-18
+ * @since 2021-04-19
  */
 @Repository
-public interface OrderMapper extends BaseMapper<Order> {
+public interface BzorderMapper extends BaseMapper<Bzorder> {
 
 }

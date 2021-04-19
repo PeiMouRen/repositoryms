@@ -1,6 +1,7 @@
 package com.rhythm.rpst.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhythm.common.Enum.UserLevel;
@@ -57,6 +58,11 @@ public class RpstController {
     @PostMapping(value = "/rpst")
     public Result addRpst(@RequestBody Rpst rpst) {
         log.info("新增仓库，" + rpst.toString());
+        if (rpstService.getOne(new QueryWrapper<Rpst>().eq("name", rpst.getName())) != null) {
+            Result result = Result.error();
+            result.setMessage("新增失败,该仓库已存在！");
+            return result;
+        }
         rpstService.addRpst(rpst);
         return Result.ok();
     }
