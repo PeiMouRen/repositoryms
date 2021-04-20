@@ -18,7 +18,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">产品类型</label>
 			<div class="layui-input-block">
-				<input type="text" name="type" required  lay-verify="required" placeholder="请输入产品类型" autocomplete="off" class="layui-input">
+				<div id="product_type" class="xm-select-demo"></div>
 			</div>
 		</div>
 		<div class="layui-form-item">
@@ -85,40 +85,90 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
-	var inStorageRpstSelect;
-	var rpstDatas = [];
-	$.ajax({
-		type: "get",
-		url: "/rpst/rpsts",
-		dataType: "json",
-		async: false,
-		success: function(result) {
-			if (result.code == 200) {
-				for (var i = 0; i < result.data.length; i++) {
-					var rpst = result.data[i];
-					var rpstData = {name : rpst.name, value : rpst.id, selected : false};
-					rpstDatas.push(rpstData);
-				}
-			}
-		}
-	})
-	inStorageRpstSelect = xmSelect.render({
-		el: '#inStorage_rpst_select',
-		name: 'rpstIds',
-		data: rpstDatas,
-		filterable: true,
-		size: 'mini',
-		paging: true,
-		radio: true,
-		clickClose: true,
-		direction: 'down'
-	});
-
-
 	layui.use(['table', 'form', 'layer'], function(){
 		var table = layui.table;
 		var form = layui.form;
 		var layer = layui.layer;
+		var inStorageRpstSelect;
+		var productTypeSelect;
+		var rpstDatas = [];
+		var productTypes = [];
+		$.ajax({
+			type: "get",
+			url: "/rpst/rpsts",
+			dataType: "json",
+			async: false,
+			success: function(result) {
+				if (result.code == 200) {
+					for (var i = 0; i < result.data.length; i++) {
+						var rpst = result.data[i];
+						var rpstData = {name : rpst.name, value : rpst.id, selected : false};
+						rpstDatas.push(rpstData);
+					}
+				}
+			}
+		})
+		$.ajax({
+			type: "get",
+			url: "/product/productTypes",
+			dataType: "json",
+			async: false,
+			success: function(result) {
+				if (result.code == 200) {
+					for (var i = 0; i < result.data.length; i++) {
+						var productType = {name : result.data[i], value: result.data[i], selected : false};
+						productTypes.push(productType);
+					}
+				}
+			}
+		})
+		inStorageRpstSelect = xmSelect.render({
+			el: '#inStorage_rpst_select',
+			name: 'rpstIds',
+			data: rpstDatas,
+			filterable: true,
+			size: 'mini',
+			paging: true,
+			toolbar: {
+				show: true,
+			},
+			radio: true,
+			clickClose: true,
+			direction: 'down'
+		});
+		productTypeSelect = xmSelect.render({
+			el: '#product_type',
+			name: 'type',
+			data: productTypes,
+			filterable: true,
+			filterDone: function(val, list) {
+				if (list.length == 0) {
+
+					layer.confirm('产品类型【' + val + '】不存在，是否创建？',
+							{
+								icon: 3,
+								title:'提示'
+							}, function(index) {
+								var productType = {name : val, value : val, selected : false};
+								productTypes.push(productType);
+								productTypeSelect.update({data: productTypes});
+								productTypeSelect.setValue([val]);
+								layer.close(index);
+							}, function(index) {
+								layer.close(index);
+							});
+
+				}
+			},
+			size: 'mini',
+			toolbar: {
+				show: true,
+			},
+			paging: true,
+			radio: true,
+			clickClose: true,
+			direction: 'down'
+		});
 
 		var productTable = table.render({
 			elem: '#test'
@@ -159,6 +209,7 @@
 			switch(obj.event){
 				case 'addProduct':
 					$('#product_form form')[0].reset();
+					productTypeSelect.setValue([]);
 					layer.open({
 						type: 1,
 						title: '新增产品',
@@ -188,7 +239,8 @@
 				});
 			} else if(obj.event === 'edit'){
 				form.val('product_form', obj.data);
-
+				$('#product_id').val(obj.data.id);
+				productTypeSelect.setValue([obj.data.type]);
 				layer.open({
 					type: 1,
 					title: '编辑产品信息',
@@ -212,12 +264,21 @@
 
 		// 监听form表单提交
 		form.on('submit(form_submit)', function(data) {
-			var method = data.field.id == ''? 'post' : 'put';
+			var method = '';
+			var product = {};
+			if (data.field.id == '') {
+				method = 'post';
+			} else {
+				method = 'put';
+				product.id = data.field.id;
+			}
+			product.type = productTypeSelect.getValue()[0].name;
+			product.name = data.field.name;
 			$.ajax({
 				type: method,
 				url: "/product/product",
 				contentType:"application/json;charset=utf-8",
-				data: JSON.stringify(data.field),
+				data: JSON.stringify(product),
 				dataType: "json",
 				success: function(result) {
 					if (result.code == 200) {

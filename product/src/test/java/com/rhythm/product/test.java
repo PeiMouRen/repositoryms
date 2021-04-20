@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-/*@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ProductApplication.class)*/
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = ProductApplication.class)
 public class test {
 
     @Autowired
@@ -33,18 +33,9 @@ public class test {
 
     @Test
     public void test() {
-        Result result = rpstService.getRpst(1);
-        Object obj = result.getData();
-        log.info(obj.toString());
-        Map<String, Object> map = (Map<String, Object>)obj;
-        log.info(map.toString());
-        int size = (int)map.get("size");
-        //int size = Integer.parseInt(map.get("size"));
-
+        List<String> types = productMapper.getProductTypes();
+        log.info("types: " + types);
     }
 
-    public static void main(String[] args) {
-        LocalDateTime a = LocalDateTime.now();
-        System.out.println(a);
-    }
+
 }

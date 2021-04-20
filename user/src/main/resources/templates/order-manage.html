@@ -41,14 +41,14 @@
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
-				{field:'id', width:100, title: '订单编号', sort: true}
-				,{field:'type', width:100, title: '订单类型', templet: '#orderTypeTpl'}
-				,{field:'rpstName', width:100, title: '操作仓库'}
-				,{field:'productName', width:100, title: '操作产品'}
-				,{field:'userName', width:100, title: '操作用户'}
-				,{field:'productNum', width:100, title: '操作产品数量', sort: true}
-				,{field:'time', width:200, title: '操作时间', sort: true}
-				,{field:'des', width:200, title: '备注'}
+				{field:'id', width:100, title: '订单编号', sort: true, align: 'center'}
+				,{field:'type', width:100, title: '订单类型', templet: '#orderTypeTpl', align: 'center'}
+				,{field:'rpstName', width:100, title: '操作仓库', align: 'center'}
+				,{field:'productName', width:100, title: '操作产品', align: 'center'}
+				,{field:'userName', width:100, title: '操作用户', align: 'center'}
+				,{field:'productNum', width:100, title: '操作产品数量', sort: true, align: 'center'}
+				,{field:'time', width:200, title: '操作时间', sort: true, align: 'center'}
+				,{field:'des', width:200, title: '备注', align: 'center'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
 				layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局

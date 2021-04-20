@@ -19,6 +19,11 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
+    @GetMapping(value = "/productTypes")
+    public Result productTypes() {
+        return productService.getproductTypes();
+    }
+
     @PutMapping(value = "/inventory")
     Result updateInventory(@RequestBody Map<String, String> param) {
         log.info("更新库存：");

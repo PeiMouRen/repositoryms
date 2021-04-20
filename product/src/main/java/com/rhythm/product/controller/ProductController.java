@@ -83,6 +83,13 @@ public class ProductController {
         return Result.ok();
     }
 
+    @GetMapping(value = "/productTypes")
+    public Result productTypes() {
+        Result result = Result.ok();
+        result.setData(productService.getProductTypes());
+        return result;
+    }
+
     @PutMapping(value = "/product")
     public Result updateProduct(@RequestBody Product product) {
        productService.updateById(product);

@@ -18,6 +18,9 @@ public interface IProductService {
     @GetMapping(value = "/product/inventory/{rpstId}")
     Result getInventory(@SpringQueryMap Page page, @PathVariable Integer rpstId);
 
+    @GetMapping(value = "/product/productTypes")
+    Result getproductTypes();
+
     @PostMapping(value = "/product/product")
     Result addProduct(@RequestBody Product product);
 

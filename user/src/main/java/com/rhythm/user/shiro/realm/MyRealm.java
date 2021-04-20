@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhythm.user.entity.User;
 import com.rhythm.user.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -22,6 +23,7 @@ import java.util.HashSet;
 /**
  * 自定义shiro域
  */
+@Slf4j
 public class MyRealm extends AuthorizingRealm {
 
     @Autowired
@@ -34,8 +36,13 @@ public class MyRealm extends AuthorizingRealm {
         // 获取用户名
         String username = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        log.info("-----------------------------------");
+        log.info(principals.toString());
+        log.info("" + SecurityUtils.getSubject().getSession().getAttribute("user"));
+        log.info("-----------------------------------");
+        User user = userService.getOne(new QueryWrapper<User>().eq("username", username));
         // 给该用户设置角色
-        authorizationInfo.setRoles(new HashSet<>());
+        authorizationInfo.setRoles(userService.getRoles(user.getId()));
         // 给该用户设置权限
         authorizationInfo.setStringPermissions(new HashSet<>());
         return authorizationInfo;

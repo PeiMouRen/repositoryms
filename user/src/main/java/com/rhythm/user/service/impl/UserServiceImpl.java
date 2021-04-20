@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+
 /**
  * <p>
  *  服务实现类
@@ -56,5 +58,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (user.getRpstIds() != null && user.getRpstIds().size() != 0) {
             userMapper.addRelation(user.getId(), user.getRpstIds());
         }
+    }
+
+    @Override
+    public HashSet<String> getRoles(Integer userId) {
+        return userMapper.getRoles(userId);
     }
 }

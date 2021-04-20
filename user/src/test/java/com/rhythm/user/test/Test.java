@@ -9,11 +9,15 @@ import com.rhythm.user.entity.User;
 import com.rhythm.user.mapper.UserMapper;
 import com.rhythm.user.service.IUserService;
 import com.rhythm.user.util.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashSet;
+
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserApplication.class)
 public class Test {
@@ -25,21 +29,8 @@ public class Test {
 
     @org.junit.Test
     public void userTest() {
-        User user = new User();
-        user.setUsername("admin");
-        user.setPassword(CommonUtil.getMD5String("admin"));
-        user.setPhone("12345612341");
-        user.setLevel(UserLevel.ADMIN.getLevel());
-        userMapper.insert(user);
-       /* Page<User> page = new Page<>(1, 2);
-        page = userService.page(page, new QueryWrapper<User>());
-        System.out.println(page.getTotal());
-        System.out.println(page.getCurrent());
-        System.out.println(page.getSize());
-        for (User user: page.getRecords()) {
-            System.out.println(user);
-        }
-        System.out.println(page.toString());*/
+        HashSet<String> set = userMapper.getRoles(1);
+        log.info("roles: " + set);
 
     }
 

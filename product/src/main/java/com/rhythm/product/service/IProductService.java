@@ -21,4 +21,6 @@ public interface IProductService extends IService<Product> {
     Result updateInventory(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des);
 
     Page getInventory(Page page, Integer rpstId);
+
+    List<String> getProductTypes();
 }

@@ -114,4 +114,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         page.setRecords(records);
         return page;
     }
+
+    @Override
+    public List<String> getProductTypes() {
+        return productMapper.getProductTypes();
+    }
 }

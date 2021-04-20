@@ -3,6 +3,9 @@ package com.rhythm.user.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rhythm.user.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.HashSet;
 
 /**
  * <p>
@@ -21,4 +24,6 @@ public interface IUserService extends IService<User> {
     void delUser(Integer userId);
 
     void updUser(User user);
+
+    HashSet<String> getRoles(Integer userId);
 }

@@ -35,4 +35,7 @@ public interface ProductMapper extends BaseMapper<Product> {
     void insertInventory(@Param("rpstId") Integer rpstId, @Param("productId") Integer productId,
                          @Param("productNum") Integer productNum);
 
+    @Select("select distinct type from product")
+    List<String> getProductTypes();
+
 }

@@ -3,6 +3,7 @@ package com.rhythm.user.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhythm.user.entity.User;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ public class PageController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @RequiresRoles(value = "manager")
     @RequestMapping(value = "/user-manage")
     public String userManage() {
         return "user-manage";
