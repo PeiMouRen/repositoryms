@@ -126,10 +126,10 @@
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
-				{field:'id', width:80, title: '产品编号', sort: true}
-				,{field:'type', width:100, title: '产品类型'}
-				,{field:'name', width:200, title: '产品名称'}
-				,{width:300,title:'操作', toolbar:'#barDemo'}
+				{field:'id', width:120, title: '产品编号', sort: true, align: 'center'}
+				,{field:'type', width:100, title: '产品类型', align: 'center'}
+				,{field:'name', width:160, title: '产品名称', align: 'center'}
+				,{width:200,title:'操作', toolbar:'#barDemo', align: 'center'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
 				layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
@@ -202,7 +202,7 @@
 				layer.open({
 					type: 1,
 					title: '产品入库',
-					area: ['410px', '250px'],
+					area: ['410px', '350px'],
 					scrollbar: false,
 					content: $('#inStorage_form')
 				});

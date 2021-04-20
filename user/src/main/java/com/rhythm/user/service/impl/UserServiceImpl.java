@@ -37,7 +37,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void addUser(User user) {
         user.setLevel(UserLevel.OPERATOR_ADVANCED.getLevel());
         userMapper.insert(user);
-        userMapper.addRelation(user.getId(), user.getRpstIds());
+        if (user.getRpstIds() != null && user.getRpstIds().size() != 0) {
+            userMapper.addRelation(user.getId(), user.getRpstIds());
+        }
     }
 
     @Override
@@ -51,6 +53,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         userMapper.updateById(user);
 
         userMapper.delRelationByUserId(user.getId());
-        userMapper.addRelation(user.getId(), user.getRpstIds());
+        if (user.getRpstIds() != null && user.getRpstIds().size() != 0) {
+            userMapper.addRelation(user.getId(), user.getRpstIds());
+        }
     }
 }

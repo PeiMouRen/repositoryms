@@ -7,6 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+	<link rel="stylesheet" href="/js/city-picker/city-picker.css"/>
 	<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
@@ -25,7 +26,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">仓库地址</label>
 			<div class="layui-input-block">
-				<input type="text" name="place" required  lay-verify="required" placeholder="请输入仓库地址" autocomplete="off" class="layui-input">
+				<input type="text" name="place" style="width: 270px;" required id="city-picker"  lay-verify="required" placeholder="请选择仓库地址" autocomplete="off" readonly="readonly" data-toggle="city-picker" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
@@ -88,6 +89,7 @@
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script src="/js/xm-select.js" charset="utf-8"></script>
+<script src="/js/city-picker/city-picker.data.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
@@ -119,10 +121,17 @@
 	});
 
 
-	layui.use(['table', 'form', 'layer'], function(){
+	layui.extend({
+		citypicker:'{/}/js/city-picker/city-picker'
+	}).use(['table', 'form', 'layer', 'citypicker'], function(){
 		var table = layui.table;
 		var form = layui.form;
 		var layer = layui.layer;
+		var cityPicker = layui.citypicker;
+
+		var currentPicker = new cityPicker("#city-picker", {
+
+		});
 
 		var rpstTable = table.render({
 			elem: '#test'
@@ -130,12 +139,12 @@
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
-				{field:'id', width:80, title: '仓库编号', sort: true}
-				,{field:'name', width:100, title: '仓库名'}
-				,{field:'place', width:200, title: '仓库地点'}
-				,{field:'size', width:200, title: '仓库大小', sort: true}
-				,{field:'users', width:200, title: '所属用户', sort: true, templet: '#userTpl', hide: userLevelHidden}
-				,{width:300,title:'操作', toolbar:'#barDemo'}
+				{field:'id', width:120, title: '仓库编号', sort: true, align: 'center'}
+				,{field:'name', width:200, title: '仓库名称', align: 'center'}
+				,{field:'place', width:200, title: '仓库地点', align: 'center'}
+				,{field:'size', width:120, title: '仓库大小', sort: true, align: 'center'}
+				,{field:'users', width:200, title: '所属用户', align: 'center', templet: '#userTpl', hide: userLevelHidden}
+				,{width:200,title:'操作', toolbar:'#barDemo', align: 'center'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
 				layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
