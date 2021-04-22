@@ -33,12 +33,12 @@ public class MyZuulFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         log.info("zuul过滤器的请求路径：" + request.getRequestURL().toString());
-        Object accessToken = request.getParameter("token");
+        /*Object accessToken = request.getParameter("token");
         if (accessToken == null) {
             log.info("token is null!");
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
-        }
+        }*/
         return null;
     }
 }
