@@ -1,6 +1,7 @@
 package com.rhythm.common.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,5 +31,14 @@ public class Product implements Serializable {
 
     private String name;
 
+    private Integer size;
 
+    @TableField(exist = false)
+    private Integer productNum;
+
+    @TableField(exist = false)
+    private boolean isUsed;
+
+    @TableField(exist = false)
+    private String location;
 }

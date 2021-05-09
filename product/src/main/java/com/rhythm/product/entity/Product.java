@@ -30,8 +30,14 @@ public class Product implements Serializable {
 
     private String name;
 
+    private Integer size;
+
     @TableField(exist = false)
     private Integer productNum;
 
+    @TableField(exist = false)
+    private boolean isUsed;
 
+    @TableField(exist = false)
+    private String location;
 }

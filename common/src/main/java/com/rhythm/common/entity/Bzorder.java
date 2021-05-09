@@ -43,6 +43,9 @@ public class Bzorder implements Serializable {
     @TableField("userName")
     private String userName;
 
+    @TableField("optName")
+    private String optName;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 

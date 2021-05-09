@@ -23,6 +23,12 @@
 				<input type="text" name="productNum" required  lay-verify="required|number" id="storage_product_pla" placeholder="请输入入库数量" autocomplete="off" class="layui-input">
 			</div>
 		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" id="storage_opt_des">供货人</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" required  lay-verify="required" id="storage_opt_pla" placeholder="请输入供货人" autocomplete="off" class="layui-input">
+			</div>
+		</div>
 		<div class="layui-form-item layui-form-text">
 			<label class="layui-form-label">备注</label>
 			<div class="layui-input-block">
@@ -90,6 +96,7 @@
 				,{field:'type', width:160, title: '产品类型', align: 'center'}
 				,{field:'name', width:160, title: '产品名称', align: 'center'}
 				,{field:'productNum', width:120, title: '库存数量', sort: true, align: 'center'}
+				,{field:'location', width:120, title: '位置',   align: 'center'}
 				,{width:200,title:'操作', toolbar:'#barDemo', align: 'center'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
@@ -151,6 +158,9 @@
 				$('#storage_product_des').val("入库数量");
 				$('#storage_product_pla').attr('placeholder', '请输入入库数量');
 				$('#storage_product_pla').val('');
+				$('#storage_opt_des').text("供货人");
+				$('#storage_opt_pla').attr('placeholder', '请输入供货人');
+				$('#storage_opt_pla').val('');
 				$('#productDes').val('');
 				layer.open({
 					type: 1,
@@ -165,6 +175,9 @@
 				$('#storage_product_des').val("出库数量");
 				$('#storage_product_pla').attr('placeholder', '请输入出库数量');
 				$('#storage_product_pla').val('');
+				$('#storage_opt_des').text("取货人");
+				$('#storage_opt_pla').attr('placeholder', '请输入取货人');
+				$('#storage_opt_pla').val('');
 				$('#productDes').val('');
 				layer.open({
 					type: 1,
@@ -190,6 +203,7 @@
 			data.productNum = $('#storage_product_pla').val();
 			data.operate = operate;
 			data.des = $('#productDes').val();
+			data.optName = $('#storage_opt_pla').val();
 			$.ajax({
 				type: 'put',
 				url: "/product/inventory",

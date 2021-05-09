@@ -39,35 +39,37 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private IOrderService orderService;
 
     @Override
-    public Result updateInventory(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des) {
+    public Result updateInventory(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des, String optName) {
         Result result = new Result();
         log.info(rpstService.getRpst(rpstId).toString());
+        Product product = productMapper.selectById(productId);
+        int productSize = product.getSize();
         Map<String, Object> rpst = (Map<String, Object>)(rpstService.getRpst(rpstId).getData());
         int size = (int)rpst.get("size");
-        Map<String, Integer> map = productMapper.selectInventory(rpstId, productId);
+        int num = productMapper.getNum(rpstId);
+        Map<String, Integer> map = productMapper.selectInventory1(rpstId, productId);
         if (operate == ProductOperate.IN.getOperate()) {
             // 入库先判断库存中有没有，没有的话先插入
             if (map == null) {
                 // 没有库存，判断入库的数量是否超标
-                if (productNum > size) {
+                if (productNum * productSize > size - num) {
                     result.setCode(201);
                     result.setMessage("入库失败，仓库容量不足！");
                     return result;
                 } else {
                     productMapper.insertInventory(rpstId, productId, productNum);
-                    generateOrder(userName, rpstId, productId, productNum, operate, des);
+                    generateOrder(userName, rpstId, productId, productNum, operate, des, optName);
                     result.setCode(200);
                     return result;
                 }
             } else {
-                int oldNum = map.get("productNum");
-                if (productNum + oldNum > size) {
+                if (productNum * productSize > size - num) {
                     result.setCode(201);
                     result.setMessage("入库失败，仓库容量不足！");
                     return result;
                 } else {
                     productMapper.updateInventory(rpstId, productId, productNum, operate);
-                    generateOrder(userName, rpstId, productId, productNum, operate, des);
+                    generateOrder(userName, rpstId, productId, productNum, operate, des, optName);
                     result.setCode(200);
                     return result;
                 }
@@ -80,14 +82,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 return result;
             } else {
                 productMapper.updateInventory(rpstId, productId, productNum, operate);
-                generateOrder(userName, rpstId, productId, productNum, operate, des);
+                generateOrder(userName, rpstId, productId, productNum, operate, des, optName);
                 result.setCode(200);
                 return result;
             }
         }
     }
 
-    private Result generateOrder(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des) {
+    private Result generateOrder(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des, String optName) {
         Bzorder order = new Bzorder();
         order.setType(operate);
         order.setUserName(userName);
@@ -98,6 +100,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         order.setProductNum(productNum);
         order.setTime(LocalDateTime.now());
         order.setDes(des);
+        order.setOptName(optName);
         return orderService.addOrder(order);
     }
 
@@ -105,10 +108,17 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     public Page getInventory(Page page, Integer rpstId) {
         page = productMapper.selectInventory(page, rpstId);
         List<Product> records = new ArrayList<>();
+        int temp1 = 1;
+        int temp2 = 1;
         for (Object obj : page.getRecords()) {
             Map<String, Integer> map = (Map<String, Integer>)obj;
             Product product = productMapper.selectById(map.get("productId"));
             product.setProductNum(map.get("productNum"));
+            int size = map.get("productNum") * product.getSize();
+            temp2 = temp1 + size - 1;
+            String location = temp1 + "-" + temp2;
+            temp1 = temp2 + 1;
+            product.setLocation(location);
             records.add(product);
         }
         page.setRecords(records);
@@ -118,5 +128,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public List<String> getProductTypes() {
         return productMapper.getProductTypes();
+    }
+
+    @Override
+    public Integer getUsed(Integer productId) {
+        return productMapper.getUsed(productId);
     }
 }

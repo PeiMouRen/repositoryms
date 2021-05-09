@@ -29,7 +29,7 @@ public interface ProductMapper extends BaseMapper<Product> {
     Page selectInventory(@Param("page")Page page, @Param("rpstId") Integer rpstId);
 
     @Select("select * from rpst_product where rpstId = #{rpstId} and productId = #{productId}")
-    Map<String, Integer> selectInventory(@Param("rpstId") Integer rpstId, @Param("productId") Integer productId);
+    Map<String, Integer> selectInventory1(@Param("rpstId") Integer rpstId, @Param("productId") Integer productId);
 
     @Insert("insert into rpst_product value(#{rpstId}, #{productId}, #{productNum})")
     void insertInventory(@Param("rpstId") Integer rpstId, @Param("productId") Integer productId,
@@ -37,5 +37,11 @@ public interface ProductMapper extends BaseMapper<Product> {
 
     @Select("select distinct type from product")
     List<String> getProductTypes();
+
+    @Select("SELECT COUNT(num) FROM(SELECT rp.rpstId, p.size * rp.productNum AS num FROM rpst_product rp JOIN product p ON rp.productId = p.id) temp WHERE temp.rpstId = #{rpstId}")
+    Integer getNum(@Param("rpstId") Integer rpstId);
+
+    @Select("SELECT COUNT(*) FROM rpst_product WHERE productId = #{productId}")
+    Integer getUsed(@Param("productId") Integer productId);
 
 }

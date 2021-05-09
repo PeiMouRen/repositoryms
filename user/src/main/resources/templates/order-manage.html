@@ -22,6 +22,15 @@
 	未知
 	{{# } }}
 </script>
+<script type="text/html" id="optTpl">
+	{{#  if(d.type == 1){ }}
+	供货人
+	{{#  } else if(d.type == -1) { }}
+	取货人
+	{{#  } else { }}
+	未知
+	{{# } }}
+</script>
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script src="/js/xm-select.js" charset="utf-8"></script>
@@ -45,7 +54,8 @@
 				,{field:'type', width:100, title: '订单类型', templet: '#orderTypeTpl', align: 'center'}
 				,{field:'rpstName', width:100, title: '操作仓库', align: 'center'}
 				,{field:'productName', width:100, title: '操作产品', align: 'center'}
-				,{field:'userName', width:100, title: '操作用户', align: 'center'}
+				,{field:'userName', width:100, title: '操作管理员', align: 'center'}
+				,{field:'optName', width:100, title: '操作用户', align: 'center'}
 				,{field:'productNum', width:100, title: '操作产品数量', sort: true, align: 'center'}
 				,{field:'time', width:200, title: '操作时间', sort: true, align: 'center'}
 				,{field:'des', width:200, title: '备注', align: 'center'}

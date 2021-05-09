@@ -18,9 +18,11 @@ import java.util.Map;
  * @since 2021-04-15
  */
 public interface IProductService extends IService<Product> {
-    Result updateInventory(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des);
+    Result updateInventory(String userName, Integer rpstId, Integer productId, Integer productNum, Integer operate, String des, String optName);
 
     Page getInventory(Page page, Integer rpstId);
 
     List<String> getProductTypes();
+
+    Integer getUsed(Integer productId);
 }

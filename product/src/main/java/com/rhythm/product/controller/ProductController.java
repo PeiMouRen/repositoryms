@@ -9,6 +9,7 @@ import com.rhythm.common.Enum.UserLevel;
 import com.rhythm.common.entity.User;
 import com.rhythm.common.result.Result;
 import com.rhythm.product.entity.Product;
+import com.rhythm.product.mapper.ProductMapper;
 import com.rhythm.product.service.IProductService;
 import com.rhythm.product.service.inter.IRpstService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,7 +65,7 @@ public class ProductController {
             e.printStackTrace();
         }
         return productService.updateInventory(user.getUsername(), Integer.parseInt(param.get("rpstId")), Integer.parseInt(param.get("productId")),
-                Integer.parseInt(param.get("productNum")), Integer.parseInt(param.get("operate")), param.get("des"));
+                Integer.parseInt(param.get("productNum")), Integer.parseInt(param.get("operate")), param.get("des"), param.get("optName"));
     }
 
     @PostMapping(value = "/product")
@@ -101,7 +103,15 @@ public class ProductController {
         page = productService.page(page);
         Result result = Result.ok();
         result.setTotal(page.getTotal());
-        result.setData(page.getRecords());
+        List<Product> products = page.getRecords();
+        for (Product product : products) {
+            if (productService.getUsed(product.getId()) == 0) {
+                product.setUsed(false);
+            } else {
+                product.setUsed(true);
+            }
+        }
+        result.setData(products);
         return result;
     }
 

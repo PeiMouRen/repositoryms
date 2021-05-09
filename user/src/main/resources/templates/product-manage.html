@@ -28,6 +28,12 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
+			<label class="layui-form-label">产品大小</label>
+			<div class="layui-input-block">
+				<input type="text" name="size" id="product_size" required  lay-verify="required|number" placeholder="请输入产品大小" autocomplete="off" value="1" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
 			<div class="layui-input-block">
 				<button class="layui-btn" lay-submit lay-filter="form_submit">确定</button>
 				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -49,6 +55,12 @@
 			<label class="layui-form-label">入库数量</label>
 			<div class="layui-input-block">
 				<input type="text" name="productNum" required id="inStorage_product_num"  lay-verify="required|number" placeholder="请输入入库数量" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" id="storage_opt_des">供货人</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" required  lay-verify="required" id="storage_opt_pla" placeholder="请输入供货人" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item layui-form-text">
@@ -179,6 +191,7 @@
 				{field:'id', width:120, title: '产品编号', sort: true, align: 'center'}
 				,{field:'type', width:100, title: '产品类型', align: 'center'}
 				,{field:'name', width:160, title: '产品名称', align: 'center'}
+				,{field:'size', width:160, title: '产品大小', align: 'center'}
 				,{width:200,title:'操作', toolbar:'#barDemo', align: 'center'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
@@ -210,6 +223,7 @@
 				case 'addProduct':
 					$('#product_form form')[0].reset();
 					productTypeSelect.setValue([]);
+					$('#product_size').removeAttr('disabled');
 					layer.open({
 						type: 1,
 						title: '新增产品',
@@ -241,6 +255,9 @@
 				form.val('product_form', obj.data);
 				$('#product_id').val(obj.data.id);
 				productTypeSelect.setValue([obj.data.type]);
+				if (obj.data.used) {
+					$('#product_size').attr('disabled', true);
+				}
 				layer.open({
 					type: 1,
 					title: '编辑产品信息',
@@ -274,6 +291,7 @@
 			}
 			product.type = productTypeSelect.getValue()[0].name;
 			product.name = data.field.name;
+			product.size = data.field.size;
 			$.ajax({
 				type: method,
 				url: "/product/product",
@@ -298,6 +316,7 @@
 			data.productId = $('#inStorage_product_id').val();
 			data.productNum = $('#inStorage_product_num').val();
 			data.operate = 1;
+			data.optName = $('#storage_opt_pla').val();
 			data.des = $('#productDes').val();
 			$.ajax({
 				type: 'put',
