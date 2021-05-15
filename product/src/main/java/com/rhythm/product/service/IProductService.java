@@ -25,4 +25,8 @@ public interface IProductService extends IService<Product> {
     List<String> getProductTypes();
 
     Integer getUsed(Integer productId);
+
+    Integer isOverdue(Product product);
+
+    Page getByFilter(Page page, Product product);
 }

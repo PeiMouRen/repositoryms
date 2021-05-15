@@ -7,6 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+	<link rel="stylesheet" href="/js/city-picker/city-picker.css"/>
 	<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
@@ -43,9 +44,71 @@
 	</form>
 </div>
 
+<div style="display: none;" id="product_filter">
+	<form class="layui-form" onsubmit="return false;" lay-filter="product_filter">
+		<div class="layui-form-item">
+			<label class="layui-form-label">产品编号</label>
+			<div class="layui-input-block">
+				<input type="text" name="id" placeholder="产品编号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">产品类型</label>
+			<div class="layui-input-block">
+				<input type="text" name="type" placeholder="产品类型" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">产品名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="name" placeholder="产品名称" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">产品大小</label>
+			<div class="layui-input-block">
+				<input type="text" name="size" placeholder="产品大小" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">生产日期</label>
+			<div class="layui-input-block">
+				<input type="text" name="startdate"  id="filter_startdate" required  placeholder="" autocomplete="off" class="layui-input">
+				<span>至</span>
+				<input type="text" name="enddate" id="filter_enddate" required  placeholder="" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">保质期(月)</label>
+			<div class="layui-input-block">
+				<input type="text" name="duration"  placeholder="请输入保质期" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">供货人</label>
+			<div class="layui-input-block">
+				<input type="text" name="supplyName" placeholder="供货人" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">供货地址</label>
+			<div class="layui-input-block">
+				<input type="text" name="supplyLocation" style="width: 270px;" required id="filter_picker" placeholder="供货地址" autocomplete="off" readonly="readonly" data-toggle="city-picker" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="form_filter">确定</button>
+				<button type="button" class="layui-btn layui-btn-primary" onclick="resetFilter()">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
 		<div id="rpst_select" style="display: inline-block;width: 200px;margin-bottom: -10px;margin-right: 10px;" class="xm-select-demo"></div>
+		<button class="layui-btn layui-btn-sm" lay-event="productFilter">产品筛选</button>
 	</div>
 </script>
 <input type="hidden" id="user_level" th:value="${userLevel}">
@@ -57,13 +120,15 @@
 <script src="/js/jquery-3.6.0.min.js" charset="utf-8"></script>
 <script src="/layui/layui.js" charset="utf-8"></script>
 <script src="/js/xm-select.js" charset="utf-8"></script>
+<script src="/js/city-picker/city-picker.data.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="none">
 	var isLoad = false;
-	var rpstId = -1;
 	var rpstSelect;
 	var rpstDatas = [];
+	var filterObj = {rpstId:-1};
+
 	$.ajax({
 		type: "get",
 		url: "/rpst/rpsts",
@@ -81,14 +146,37 @@
 	})
 
 
-	layui.use(['table', 'form', 'layer'], function(){
+	layui.extend({
+		citypicker:'{/}/js/city-picker/city-picker'
+	}).use(['table', 'form', 'layer', 'citypicker'], function(){
 		var table = layui.table;
 		var form = layui.form;
 		var layer = layui.layer;
+		var laydate = layui.laydate;
+		var cityPicker = layui.citypicker;
+		var filterPicker = new cityPicker("#filter_picker", {
 
+		});
+		function resetFilter() {
+			$('#product_filter form')[0].reset();
+			filterPicker.setValue('');
+			filterObj = {};
+			filterObj.rpstId = rpstDatas[0].value;
+		}
+		laydate.render({
+			elem : '#filter_startdate',
+			type : 'datetime'
+		});
+		laydate.render({
+			elem : '#filter_enddate',
+			type : 'datetime'
+		});
 		var productTable = table.render({
 			elem: '#test'
-			,url:'/product/inventory/' + rpstId
+			,url:'/product/filter'
+			,method: 'post'
+			,where: filterObj
+			,contentType: "application/json;charset=UTF-8"
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
@@ -96,6 +184,10 @@
 				,{field:'type', width:160, title: '产品类型', align: 'center'}
 				,{field:'name', width:160, title: '产品名称', align: 'center'}
 				,{field:'productNum', width:120, title: '库存数量', sort: true, align: 'center'}
+				,{field:'productionDate', width:160, title: '生产日期', sort: true, align: 'center'}
+				,{field:'duration', width:160, title: '保质期（月）', align: 'center'}
+				,{field:'supplyName', width:160, title: '供货人', align: 'center'}
+				,{field:'supplyLocation', width:160, title: '供货地址', align: 'center'}
 				,{field:'location', width:120, title: '位置',   align: 'center'}
 				,{width:200,title:'操作', toolbar:'#barDemo', align: 'center'}
 			]]
@@ -108,7 +200,7 @@
 			}
 			,request: {
 				pageName: 'current',
-				limitName: 'size'
+				limitName: 'pageSize'
 			}
 			,response: {
 				statusName: 'code' //数据状态的字段名称，默认：code
@@ -118,6 +210,21 @@
 				,dataName: 'data' //数据列表的字段名称，默认：data
 			}
 			,done: function(res, curr, count) {
+
+				res.data.forEach(function (item, index) {
+
+					var tr = $(".layui-table tr[data-index=" + index + "]");
+					if (item['overdue'] == 1) { // 已过期
+						tr.attr('title', '该产品已过期！');
+						tr.css('background', 'rgba(255,49,0,0.34)');
+						return true;
+					}
+					if (item['overdue'] == 2) { // 即将过期
+						tr.attr('title', '该产品即将过期！');
+						tr.css('background', 'rgba(236,220,6,0.47)');
+					}
+
+				});
 				rpstSelect = xmSelect.render({
 					el: '#rpst_select',
 					name: 'rpstId',
@@ -132,22 +239,38 @@
 					direction: 'down',
 					on: function({ arr, change, isAdd }) {
 						if (arr.length > 0) {
-							rpstId = arr[0].value;
+							filterObj.rpstId = arr[0].value;
 						} else {
-							rpstId = -1;
+							filterObj.rpstId = -1;
 						}
-						productTable.reload({url:'/product/inventory/' + rpstId}, false);
+						productTable.reload({where: filterObj}, false);
 					}
 				});
 
-				if (rpstId != -1) {
-					rpstSelect.setValue([rpstId]);
+				if (filterObj.rpstId != -1) {
+					rpstSelect.setValue([filterObj.rpstId]);
 				} else if (rpstSelect.getValue().length == 0 && rpstDatas.length > 0) {
-					rpstId = rpstDatas[0].value;
-					productTable.reload({url:'/product/inventory/' + rpstId}, false);
+					filterObj.rpstId = rpstDatas[0].value;
+					console.log(filterObj.rpstId)
+					productTable.reload({where: filterObj}, false);
 				}
+				resetFilter();
 
 			}
+		});
+
+		//头工具栏事件
+		table.on('toolbar(test)', function(obj){
+			switch(obj.event){
+				case 'productFilter' :
+					layer.open({
+						type: 1,
+						title: '产品筛选',
+						area: ['400px', '400px'],
+						content: $('#product_filter')
+					});
+					break;
+			};
 		});
 
 		//监听工具条
@@ -160,7 +283,7 @@
 				$('#storage_product_pla').val('');
 				$('#storage_opt_des').text("供货人");
 				$('#storage_opt_pla').attr('placeholder', '请输入供货人');
-				$('#storage_opt_pla').val('');
+				$('#storage_opt_pla').val(obj.data.supplyName);
 				$('#productDes').val('');
 				layer.open({
 					type: 1,
@@ -221,6 +344,16 @@
 					}
 				}
 			})
+		});
+
+		form.on('submit(form_filter)', function(data) {
+			filterObj = data.field;
+			console.log('过滤参数：' + JSON.stringify(filterObj))
+			productTable.reload({
+				where: filterObj
+			});
+			layer.closeAll();
+			layer.msg('筛选成功！', {icon : 1});
 		});
 
 

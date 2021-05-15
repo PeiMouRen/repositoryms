@@ -51,5 +51,17 @@ public class Bzorder implements Serializable {
 
     private String des;
 
+    @TableField(exist = false)
+    private String startdate;
+
+    @TableField(exist = false)
+    private String enddate;
+
+    @TableField(exist = false)
+    private Long current;
+
+    @TableField(exist = false)
+    private Long pageSize;
+
 
 }

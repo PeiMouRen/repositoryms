@@ -16,4 +16,45 @@
         select * from rpst_product where rpstId = #{rpstId} and productNum != 0
     </select>
 
+
+    <select id="getByFilter" resultType="com.rhythm.product.entity.Product">
+        select p.*
+        <if test="product.rpstId != null">
+            , rp.productNum
+        </if>
+        from product p
+        <if test="product.rpstId != null">
+            join rpst_product rp on p.id = rp.productid and rp.rpstId = #{product.rpstId} and rp.productNum != 0
+        </if>
+        <if test="product.rpstId == null">
+            where 1=1
+        </if>
+        <if test="product.id != null">
+            and p.id = #{product.id}
+        </if>
+        <if test="product.type != null and product.type != ''">
+            and p.type like concat(concat('%', #{product.type}), '%')
+        </if>
+        <if test="product.name != null and product.name != ''">
+            and p.name like concat(concat('%', #{product.name}), '%')
+        </if>
+        <if test="product.size != null and product.size != ''">
+            and p.size = #{product.size}
+        </if>
+        <if test="product.startdate != null and product.startdate != ''">
+            and p.productionDate &gt;= #{product.startdate}
+        </if>
+        <if test="product.enddate != null and product.enddate != ''">
+            and p.productionDate &lt;= #{product.enddate}
+        </if>
+        <if test="product.duration != null and product.duration != ''">
+            and p.duration = #{product.duration}
+        </if>
+        <if test="product.supplyName != null and product.supplyName != ''">
+            and p.supplyName like concat(concat('%', #{product.supplyName}), '%')
+        </if>
+        <if test="product.supplyLocation != null and product.supplyLocation != ''">
+            and p.supplyLocation like concat(concat('%', #{product.supplyLocation}), '%')
+        </if>
+    </select>
 </mapper>

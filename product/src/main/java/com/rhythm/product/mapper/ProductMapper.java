@@ -44,4 +44,6 @@ public interface ProductMapper extends BaseMapper<Product> {
     @Select("SELECT COUNT(*) FROM rpst_product WHERE productId = #{productId}")
     Integer getUsed(@Param("productId") Integer productId);
 
+    Page getByFilter(@Param("page")Page page, @Param("product") Product product);
+
 }

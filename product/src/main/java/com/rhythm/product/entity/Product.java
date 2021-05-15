@@ -1,9 +1,12 @@
 package com.rhythm.product.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -14,7 +17,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author xzpei
- * @since 2021-04-15
+ * @since 2021-05-12
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -32,6 +35,18 @@ public class Product implements Serializable {
 
     private Integer size;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField("productionDate")
+    private LocalDateTime productionDate;
+
+    private Integer duration;
+
+    @TableField("supplyName")
+    private String supplyName;
+
+    @TableField("supplyLocation")
+    private String supplyLocation;
+
     @TableField(exist = false)
     private Integer productNum;
 
@@ -40,4 +55,23 @@ public class Product implements Serializable {
 
     @TableField(exist = false)
     private String location;
+
+    @TableField(exist = false)
+    private Integer overdue;
+
+    @TableField(exist = false)
+    private String startdate;
+
+    @TableField(exist = false)
+    private String enddate;
+
+    @TableField(exist = false)
+    private Integer rpstId;
+
+    @TableField(exist = false)
+    private Long current;
+
+    @TableField(exist = false)
+    private Long pageSize;
+
 }

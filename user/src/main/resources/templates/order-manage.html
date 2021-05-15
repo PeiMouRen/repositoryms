@@ -12,6 +12,81 @@
 <body>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
+<div style="display: none;" id="order_filter">
+	<form class="layui-form" onsubmit="return false;" lay-filter="order_filter">
+		<div class="layui-form-item">
+			<label class="layui-form-label">订单编号</label>
+			<div class="layui-input-block">
+				<input type="text" name="id" placeholder="订单编号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">订单类型</label>
+			<div class="layui-input-block">
+				<select name="type" lay-verify="required">
+					<option value="1">入库订单</option>
+					<option value="-1">出库订单</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">仓库名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="rpstName" placeholder="仓库名称" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">产品名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="productName" placeholder="产品名称" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">产品数量</label>
+			<div class="layui-input-block">
+				<input type="text" name="productNum" placeholder="产品数量" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">管理员名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="userName" placeholder="管理员名称" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">操作用户</label>
+			<div class="layui-input-block">
+				<input type="text" name="optName" placeholder="操作用户" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">生成日期</label>
+			<div class="layui-input-block">
+				<input type="text" name="startdate"  id="filter_startdate" required  placeholder="" autocomplete="off" class="layui-input">
+				<span>至</span>
+				<input type="text" name="enddate" id="filter_enddate" required  placeholder="" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+				<input type="text" name="des"  placeholder="备注" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="form_filter">确定</button>
+				<button type="button" class="layui-btn layui-btn-primary" onclick="resetFilter()">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="text/html" id="toolbarDemo">
+	<div class="layui-btn-container">
+		<button class="layui-btn layui-btn-sm" lay-event="orderFilter">订单筛选</button>
+	</div>
+</script>
+
 <input type="hidden" id="user_level" th:value="${userLevel}">
 <script type="text/html" id="orderTypeTpl">
 	{{#  if(d.type == 1){ }}
@@ -43,10 +118,26 @@
 		var table = layui.table;
 		var form = layui.form;
 		var layer = layui.layer;
-
-		var productTable = table.render({
+		var laydate = layui.laydate;
+		var filterObj = {};
+		function resetFilter() {
+			$('#order_filter form')[0].reset();
+			filterObj = {};
+		}
+		laydate.render({
+			elem : '#filter_startdate',
+			type : 'datetime'
+		});
+		laydate.render({
+			elem : '#filter_enddate',
+			type : 'datetime'
+		});
+		var orderTable = table.render({
 			elem: '#test'
 			,url:'/order/order'
+			,method: 'post'
+			,where: filterObj
+			,contentType: "application/json;charset=UTF-8"
 			,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
 			,defaultToolbar: ['filter', 'exports', 'print']
 			,cols: [[
@@ -69,7 +160,7 @@
 			}
 			,request: {
 				pageName: 'current',
-				limitName: 'size'
+				limitName: 'pageSize'
 			}
 			,response: {
 				statusName: 'code' //数据状态的字段名称，默认：code
@@ -79,23 +170,32 @@
 				,dataName: 'data' //数据列表的字段名称，默认：data
 			}
 			,done: function(res, curr, count) {
-
+				resetFilter();
 			}
 		});
 
 		//头工具栏事件
 		table.on('toolbar(test)', function(obj){
 			switch(obj.event){
-				case 'addProduct':
-					$('#product_form form')[0].reset();
+				case 'orderFilter' :
 					layer.open({
 						type: 1,
-						title: '新增产品',
+						title: '订单筛选',
 						area: ['400px', '400px'],
-						content: $('#product_form')
+						content: $('#order_filter')
 					});
 					break;
 			};
+		});
+
+		form.on('submit(form_filter)', function(data) {
+			filterObj = data.field;
+			console.log('过滤参数：' + JSON.stringify(filterObj))
+			orderTable.reload({
+				where: filterObj
+			});
+			layer.closeAll();
+			layer.msg('筛选成功！', {icon : 1});
 		});
 	});
 </script>

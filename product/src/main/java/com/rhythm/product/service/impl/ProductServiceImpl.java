@@ -1,6 +1,7 @@
 package com.rhythm.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rhythm.common.Enum.Overdue;
 import com.rhythm.common.entity.Bzorder;
 import com.rhythm.common.result.Result;
 import com.rhythm.product.Enum.ProductOperate;
@@ -10,14 +11,16 @@ import com.rhythm.product.service.IProductService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rhythm.product.service.inter.IOrderService;
 import com.rhythm.product.service.inter.IRpstService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.*;
 
 /**
  * <p>
@@ -49,6 +52,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         int num = productMapper.getNum(rpstId);
         Map<String, Integer> map = productMapper.selectInventory1(rpstId, productId);
         if (operate == ProductOperate.IN.getOperate()) {
+            optName = product.getSupplyName();
             // 入库先判断库存中有没有，没有的话先插入
             if (map == null) {
                 // 没有库存，判断入库的数量是否超标
@@ -119,6 +123,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             String location = temp1 + "-" + temp2;
             temp1 = temp2 + 1;
             product.setLocation(location);
+
             records.add(product);
         }
         page.setRecords(records);
@@ -133,5 +138,72 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public Integer getUsed(Integer productId) {
         return productMapper.getUsed(productId);
+    }
+
+    @Override
+    public Integer isOverdue(Product product) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Date.from(product.getProductionDate().toInstant(ZoneOffset.of("+8"))));
+            calendar.add(Calendar.MONTH, product.getDuration());
+            long time = calendar.getTimeInMillis() - LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            if (time <= 0) {
+                return Overdue.EXPIRED.getOverdue(); // 已过期
+            }
+
+            long day = time / (24 * 60 * 60 * 1000);
+            if (day <= Overdue.EXPIREDDAY.getOverdue()) {
+                return Overdue.BEEXPIRED.getOverdue(); // 即将过期
+            }
+            return Overdue.UNEXPIRED.getOverdue(); // 未过期
+        } catch (Exception e) {
+            return Overdue.UNEXPIRED.getOverdue(); // 未过期
+        }
+
+    }
+
+    @Override
+    public Page getByFilter(Page page, Product product) {
+        page = productMapper.getByFilter(page, product);
+
+        int temp1 = 1;
+        int temp2 = 1;
+        List<Product> temps = page.getRecords();
+        for (Product temp : temps) {
+            if (getUsed(temp.getId()) == 0) {
+                temp.setUsed(false);
+            } else {
+                temp.setUsed(true);
+            }
+
+            temp.setOverdue(isOverdue(temp));
+
+            if (temp.getRpstId() != null) {
+                int size = temp.getProductNum() * temp.getSize();
+                temp2 = temp1 + size - 1;
+                String location = temp1 + "-" + temp2;
+                temp1 = temp2 + 1;
+                temp.setLocation(location);
+            }
+
+        }
+        page.setRecords(temps);
+        return page;
+    }
+
+    public static void main(String[] args) {
+        LocalDateTime llt = LocalDateTime.of(LocalDate.of(2021,4,1), LocalTime.of(20,31,20));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Date.from(llt.toInstant(ZoneOffset.of("+8"))));
+        calendar.add(Calendar.MONTH, 1);
+        System.out.println(calendar.getTime());
+        long a = calendar.getTimeInMillis();
+
+        LocalDateTime now = LocalDateTime.now();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(Date.from(now.toInstant(ZoneOffset.of("+8"))));
+        System.out.println(calendar1.getTime());
+        long b = calendar1.getTimeInMillis();
+        System.out.println(b + "-" + a + "=" + (b - a));
     }
 }

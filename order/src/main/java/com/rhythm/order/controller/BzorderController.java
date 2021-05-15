@@ -31,9 +31,10 @@ public class BzorderController {
         return Result.ok();
     }
 
-    @GetMapping(value = "/order")
-    public Result getOrder(Page page) {
-        page = orderService.page(page);
+    @PostMapping(value = "/order")
+    public Result getOrder(@RequestBody Bzorder order) {
+        Page page = new Page(order.getCurrent(), order.getPageSize());
+        page = orderService.getByFilter(page, order);
         Result result = Result.ok();
         result.setTotal(page.getTotal());
         result.setData(page.getRecords());

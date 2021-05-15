@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rhythm.order.mapper.BzorderMapper">
+    <select id="getByFilter" resultType="com.rhythm.order.entity.Bzorder">
+        select * from bzorder where 1=1
+        <if test="order.id != null">
+            and id = #{order.id}
+        </if>
+        <if test="order.type != null">
+           and type = #{order.type}
+        </if>
+        <if test="order.rpstName != null and order.rpstName != ''">
+            and rpstName like concat(concat('%', #{order.rpstName}), '%')
+        </if>
+        <if test="order.productName != null and order.productName != ''">
+            and productName like concat(concat('%', #{order.productName}), '%')
+        </if>
+        <if test="order.productNum != null">
+            and productNum = #{order.productNum}
+        </if>
+        <if test="order.userName != null and order.userName != ''">
+            and userName like concat(concat('%', #{order.userName}), '%')
+        </if>
+        <if test="order.optName != null and order.optName != ''">
+            and optName like concat(concat('%', #{order.optName}), '%')
+        </if>
+        <if test="order.startdate != null and order.startdate != ''">
+            and time &gt;= #{order.startdate}
+        </if>
+        <if test="order.enddate != null and order.enddate != ''">
+            and time &lt;= #{order.enddate}
+        </if>
+        <if test="order.des != null and order.des != ''">
+            and des like concat(concat('%', #{order.des}), '%')
+        </if>
 
+    </select>
 </mapper>

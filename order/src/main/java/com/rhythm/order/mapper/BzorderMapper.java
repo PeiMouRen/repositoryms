@@ -1,7 +1,9 @@
 package com.rhythm.order.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rhythm.order.entity.Bzorder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,4 +17,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BzorderMapper extends BaseMapper<Bzorder> {
 
+    Page getByFilter(@Param("page")Page page, @Param("order") Bzorder order);
 }

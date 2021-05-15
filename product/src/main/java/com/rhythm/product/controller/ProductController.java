@@ -39,6 +39,19 @@ public class ProductController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @PostMapping(value = "/filter")
+    public Result getByFilter(@RequestBody Product product) {
+        Page page = new Page(product.getCurrent(), product.getPageSize());
+        log.info("新版查询产品的方法：");
+        log.info("分页详情" + page.toString());
+        log.info("产品详情：" + product.toString());
+        page = productService.getByFilter(page, product);
+        Result result = Result.ok();
+        result.setTotal(page.getTotal());
+        result.setData(page.getRecords());
+        return result;
+    }
+
     @GetMapping(value = "/inventory/{rpstId}")
     public Result getInventory(Page page, @PathVariable Integer rpstId) {
         log.info("获取库存信息：");
@@ -110,6 +123,8 @@ public class ProductController {
             } else {
                 product.setUsed(true);
             }
+
+            product.setOverdue(productService.isOverdue(product));
         }
         result.setData(products);
         return result;

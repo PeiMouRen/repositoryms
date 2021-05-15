@@ -12,6 +12,9 @@ import java.util.Map;
 @FeignClient(value = "product")
 public interface IProductService {
 
+    @PostMapping(value = "/product/filter")
+    Result getByFilter(@RequestBody Product product);
+
     @PutMapping(value = "/product/inventory")
     Result updateInventory(@RequestBody Map<String, String> param);
 

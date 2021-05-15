@@ -24,6 +24,13 @@ public class ProductController {
         return productService.getproductTypes();
     }
 
+    @PostMapping(value = "/filter")
+    public Result getByFilter(@RequestBody Product product) {
+        log.info("新版查询产品的方法：");
+        log.info("产品详情：" + product.toString());
+        return productService.getByFilter(product);
+    }
+
     @PutMapping(value = "/inventory")
     Result updateInventory(@RequestBody Map<String, String> param) {
         log.info("更新库存：");
