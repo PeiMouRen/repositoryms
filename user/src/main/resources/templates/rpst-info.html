@@ -128,6 +128,7 @@
 	var rpstSelect;
 	var rpstDatas = [];
 	var filterObj = {rpstId:-1};
+	var posationHide = true; // 决定“位置”列是否显示
 
 	$.ajax({
 		type: "get",
@@ -188,7 +189,7 @@
 				,{field:'duration', width:160, title: '保质期（月）', align: 'center'}
 				,{field:'supplyName', width:160, title: '供货人', align: 'center'}
 				,{field:'supplyLocation', width:160, title: '供货地址', align: 'center'}
-				,{field:'location', width:120, title: '位置',   align: 'center'}
+				,{field:'location', width:120, title: '位置',   align: 'center', hide: posationHide}
 				,{width:200,title:'操作', toolbar:'#barDemo', align: 'center'}
 			]]
 			,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
@@ -349,6 +350,7 @@
 		form.on('submit(form_filter)', function(data) {
 			filterObj = data.field;
 			console.log('过滤参数：' + JSON.stringify(filterObj))
+			posationHide = false;
 			productTable.reload({
 				where: filterObj
 			});

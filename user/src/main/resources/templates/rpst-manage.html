@@ -52,7 +52,9 @@
 
 <script type="text/html" id="toolbarDemo">
 	<div class="layui-btn-container">
+		{{# if(d.level != 1) { }}
 		<button class="layui-btn layui-btn-sm" lay-event="addRpst">新增仓库</button>
+		{{# } }}
 	</div>
 </script>
 
